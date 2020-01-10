@@ -3,13 +3,16 @@ import { createStackNavigator } from 'react-navigation-stack'
 import SearchResultsScreen from '../screens/SearchResultsScreen'
 import PostScreen from '../screens/PostScreen'
 import SearchScreen from '../screens/SearchScreen'
+import VideoScreen from '../screens/VideoScreen'
+
 
 const HypeAppNavigator = createStackNavigator({
   SearchScreen,
   SearchResultsScreen,
-  PostScreen
+  PostScreen,
+  VideoScreen
 }, {
-  initialRouteName: 'SearchResultsScreen'
+  // initialRouteName: 'SearchResultsScreen'
 }
 
 )
