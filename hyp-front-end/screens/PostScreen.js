@@ -1,11 +1,13 @@
 import React, { Component, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, Image, KeyboardAvoidingView, Dimensions } from 'react-native';
 import Colors from '../constants/Colors'
 import { ListItem, Card, Button, Icon } from 'react-native-elements'
 import PostAvatar from '../components/PostAvatar'
 import CommentInput from '../components/CommentInput'
 import CommentsContainer from '../containers/CommentsContainer'
 import PostTitleTags from '../components/PostTitleTags'
+import { Video } from 'expo-av'
+import VideoPlayer from 'expo-video-player'
 
 import API from '../adapters/API'
 import Comment from '../components/Comment'
@@ -23,12 +25,21 @@ const PostScreen = props => {
     <View>
       {/* post video starts here */}
       <View>
-        <Image source={{ uri: "https://picsum.photos/300" }} style={{
-          width: '100%',
-          height: 400,
-          // borderBottomColor: 'black',
-
-        }} />
+        <VideoPlayer
+          videoProps={{
+            shouldPlay: true,
+            resizeMode: Video.RESIZE_MODE_CONTAIN,
+            source: {
+              uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            },
+          }}
+          inFullscreen={true}
+          showControlsOnLoad={true}
+          showFullscreenButton={false}
+          width={Dimensions.get('window').width}
+          height={300}
+        // inFullscreen={false}
+        />
       </View>
       <View style={styles.red}>
         <View style={styles.postDetails}>

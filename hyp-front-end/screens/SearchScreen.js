@@ -10,12 +10,13 @@ import SearchField from '../components/SearchField'
 import { Button as IconButton } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Colors from '../constants/Colors'
+// import VideoScreen from '../screens/VideoScreen'
 
 
 export default function SearchScreen(props) {
   const [value, setChangeText] = React.useState('');
 
-  console.log(props.navigation)
+  // console.log(props.navigation)
 
   const getValue = text => console.log(text)
 

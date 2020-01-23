@@ -1,4 +1,6 @@
-const apiEndpoint = 'http://localhost:3000'
+
+const apiEndpoint = 'https://bbc9d876.ngrok.io'
+// const apiEndpoint = 'http://localhost:3000'
 const usersUrl = `${apiEndpoint}/users`
 const loginUrl = `${apiEndpoint}/login`
 const validateUrl = `${apiEndpoint}/validate`
