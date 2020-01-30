@@ -11,6 +11,7 @@ import VideoPlayer from 'expo-video-player'
 import ImageStillScreen from '../screens/ImageStillScreen'
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+import Colors from '../constants/Colors'
 // import { Header } from 'react-native/Libraries/NewAppScreen'
 
 const { width: winWidth, height: winHeight } = Dimensions.get('window')
@@ -27,6 +28,7 @@ export default class VideoScreen extends React.Component {
           <Item
             title='Next'
             onPress={navigation.getParam('goToSubmitPostScreen')}
+            color={Colors.primary}
           />
         </HeaderButtons>
       ),
@@ -35,9 +37,14 @@ export default class VideoScreen extends React.Component {
           <Item
             title='Back'
             onPress={() => navigation.goBack()}
+            color={Colors.primary}
           />
         </HeaderButtons>
-      )
+      ),
+      headerStyle: {
+        backgroundColor: Colors.tertiary
+      },
+      headerTintColor: 'white'
     }
   }
 
@@ -52,16 +59,23 @@ export default class VideoScreen extends React.Component {
   };
 
   async componentDidMount() {
+    console.log(this.state)
     const camera = await Permissions.askAsync(Permissions.CAMERA);
     const audio = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
     const hasCameraPermission = (camera.status === 'granted' && audio.status === 'granted');
     this.setState({ hasCameraPermission });
 
-    this.props.navigation.setParams({ goToSubmitPostScreen: this._goToSubmitPostScreen })
+    this.props.navigation.setParams({ goToSubmitPostScreen: this._goToSubmitPostScreen, captures: this.state.captures })
   };
 
+  componentWillUnmount() {
+    console.log(this.state)
+  }
+
   setFlashMode = (flashMode) => this.setState({ flashMode });
+
   setCameraType = (cameraType) => this.setState({ cameraType });
+
   handleCaptureIn = () => this.setState({ capturing: true });
 
   handleCaptureOut = () => {
@@ -79,22 +93,13 @@ export default class VideoScreen extends React.Component {
     this.setState({ capturing: false, captures: { type: 'video', videoData } });
   };
 
-  go = captures => {
-    return this.props.navigation.navigate('ImageStillScreen', { captures })
-  }
-
   _goToSubmitPostScreen = () => {
-    console.log("go submit hit")
-    // return Object.entries(this.state.captures).length == 0 ? null : console.log("go next")
-  }
-
-  goBackToHomeScreen = () => {
-    //no conditions, just send back to home screen
-    console.log("go back hit")
-    return Object.entries(this.state.captures).length == 0 ? null
-      :
-      props.navigation.navigate('SubmitPostScreen',
-        { captures })
+    const captures = this.state.captures
+    if (Object.entries(this.state.captures).length === 0) {
+      return null
+    } else {
+      this.props.navigation.navigate('SubmitPostScreen', { captures })
+    }
   }
 
 
@@ -121,6 +126,10 @@ export default class VideoScreen extends React.Component {
         </View>
         {captures.type === "video"
           &&
+          //short fix: need a ratake button on the below video review screen to remount this component so can take pic of vid again
+          //and one on image view screen
+          //long fix: need MediaReviewScreen which contains either the video player or image still screen data to put in 
+          //navigation stack so BACK button can go back to this media capture screen (VideoScreen)
 
           <VideoPlayer
             videoProps={{

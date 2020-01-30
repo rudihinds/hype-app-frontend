@@ -11,8 +11,8 @@ const SearchResultsScreen = props => {
 
   useEffect(() => {
     const fetchComments = () => {
-      //get posts will send a search term down in live version and return
-      //the posts for that search term
+      //get posts will send a search term down in live version and return the posts for that search term
+      //will receive props from wherever request is sent, ie string of search, can use this as my posts page
       API.getPosts()
         .then(results => setResultsList(results))
     }

@@ -17,18 +17,6 @@ function ImageStillScreen(props) {
         style={styles.image}
         source={{ uri: captures['photoData']['uri'] }}
       >
-        <Button
-
-          style={[styles.nextButton, styles.red]}
-          title={'next'}
-          color={'white'}
-          // size={15}
-          // color='white'
-
-          onPress={() => props.navigation.navigate('SubmitPostScreen',
-            { captures }
-          )}
-        />
       </ImageBackground>
     </View>
   );

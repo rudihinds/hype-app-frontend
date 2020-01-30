@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  Image,
   Button,
   TouchableOpacity,
   Dimensions,
@@ -14,7 +15,7 @@ import Tags from "react-native-tags";
 import { Icon } from 'react-native-elements';
 import TagInput from 'react-native-tags-input';
 import LocationPicker from '../components/LocationPicker'
-// import * as VideoThumbnails from 'expo-video-thumbnails';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 
 
 const mainColor = '#3ca897';
@@ -31,30 +32,28 @@ export default class SubmitPostScreen extends Component {
         tag: '',
         tagsArray: []
       },
+      captures: {},
       preview: null
     };
   }
 
-  // its not accepting the URI as a valid format, we need the pure unsaved uri or video link etc, will be on video screen
-  // i havent got the next process set up for video
   componentDidMount = () => {
-    console.log(this.props.navigation.state.params.captures.photoData)
-    const { uri } = this.props.navigation.state.params.captures.photoData
-    this.generateThumbnail(this.props.navigation.state.params.captures.photoData.uri)
 
-
+    this.setState({ captures: this.props.navigation.state.params.captures })
+    if (this.props.navigation.state.params.captures.type === "photo") {
+      this.setState({ preview: this.props.navigation.state.params.captures.photoData })
+    } else {
+      this.generateThumbnail(this.props.navigation.state.params.captures.videoData.uri)
+    }
   };
 
-  generateThumbnail = async (propsUri) => {
+  generateThumbnail = async (uri) => {
     try {
-      console.log(propsUri)
-      const { uri } = await VideoThumbnails.getThumbnailAsync(
-        propsUri,
-        {
-
-        }
+      const preview = await VideoThumbnails.getThumbnailAsync(
+        uri,
+        { time: 1500 }
       )
-      this.setState({ preview: uri })
+      this.setState({ preview })
     } catch (e) {
       console.log('this is the rassclart error: ', e)
     }
@@ -90,28 +89,28 @@ export default class SubmitPostScreen extends Component {
 
   render() {
     console.log(this.state)
-
-
-    const { title, tags, caption, location } = this.state
+    const { title, tags, caption, location, preview } = this.state
 
     return (
       <ScrollView>
-
         <View style={styles.form}>
-          <View style={styles.formControl}>
-            <Text style={styles.label}>Title</Text>
-            <TextInput
-              style={styles.input}
-              value={title}
-              onChangeText={this.handleTitleChange}
-              keyboardType="default"
-              autoCapitalize="sentences"
-              autoCorrect
-              returnKeyType="next"
-              onEndEditing={() => console.log('onEndEditing')}
-              onSubmitEditing={() => console.log('onSubmitEditing')}
-              required='true'
-            />
+          <View style={[styles.formControl, styles.input, { flexDirection: 'row', flex: 6 }]}>
+            {preview && <View style={{ flex: 1 }}><Image style={{ height: 65, width: 65 }} source={{ uri: preview.uri }} /></View>}
+            <View style={{ flex: 4 }}>
+              <Text style={styles.label}>Title</Text>
+              <TextInput
+                // style={styles.input}
+                value={title}
+                onChangeText={this.handleTitleChange}
+                keyboardType="default"
+                autoCapitalize="sentences"
+                autoCorrect
+                returnKeyType="next"
+                onEndEditing={() => console.log('onEndEditing')}
+                onSubmitEditing={() => console.log('onSubmitEditing')}
+                required='true'
+              />
+            </View>
             {/* {!formState.inputValidities.title && <Text>Please enter a valid title!</Text>} */}
           </View>
           <View style={styles.formControl}>
@@ -135,8 +134,6 @@ export default class SubmitPostScreen extends Component {
                 updateState={this.updateTagState}
                 tags={this.state.tags}
                 placeholder="add multiple tags with space key"
-
-
               />
             </View>
           </View>
@@ -159,13 +156,15 @@ const styles = StyleSheet.create({
   },
   label: {
     // fontFamily: 'open-sans-bold',
-    marginVertical: 8
+    marginVertical: 8,
+    color: 'grey',
+    // textDecorationStyle: 'double'
   },
   input: {
     paddingHorizontal: 2,
     paddingVertical: 5,
     borderBottomColor: '#ccc',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   container: {
     flex: 1,
@@ -186,6 +185,7 @@ const styles = StyleSheet.create({
   tagText: {
     color: mainColor
   },
+
 });
 
 
