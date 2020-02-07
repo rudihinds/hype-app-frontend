@@ -19,7 +19,7 @@ const SearchResultsScreen = props => {
     fetchComments()
   }, [])
 
-  console.log(resultsList.length)
+  console.log(resultsList, "fuck off")
 
   return (
 

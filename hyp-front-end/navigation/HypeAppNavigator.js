@@ -21,7 +21,7 @@ const HypeAppNavigator = createStackNavigator({
   UserShowScreen,
 
 }, {
-  initialRouteName: 'SearchScreen'
+  initialRouteName: 'VideoScreen'
 }
 
 )

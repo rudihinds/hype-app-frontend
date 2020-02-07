@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Button,
@@ -14,7 +14,11 @@ import Colors from '../constants/Colors';
 
 const LocationPicker = props => {
   const [isFetching, setIsFetching] = useState(false);
-  const [pickedLocation, setPickedLocation] = useState('');
+  const [pickedLocation, setPickedLocation] = useState({});
+
+  useEffect(() => {
+    props.grabCoords(pickedLocation)
+  }, [pickedLocation])
 
   const verifyPermissions = async () => {
     const result = await Permissions.askAsync(Permissions.LOCATION);
@@ -40,11 +44,11 @@ const LocationPicker = props => {
       const location = await Location.getCurrentPositionAsync({
         timeout: 5000
       });
-      props.grabCoords(location)
       setPickedLocation({
         lat: location.coords.latitude,
         lng: location.coords.longitude
-      });
+      })
+
     } catch (err) {
       Alert.alert(
         'Could not fetch location!',
@@ -54,7 +58,7 @@ const LocationPicker = props => {
     }
     setIsFetching(false)
   };
-  
+
   return (
     <View style={styles.locationPicker}>
       <Button
@@ -66,7 +70,7 @@ const LocationPicker = props => {
         {isFetching ? (
           <ActivityIndicator size="large" color={Colors.primary} />
         ) : (
-            pickedLocation !== ''
+            pickedLocation !== {}
             &&
             <Text>{pickedLocation.lat}, {pickedLocation.lng}</Text>
           )}

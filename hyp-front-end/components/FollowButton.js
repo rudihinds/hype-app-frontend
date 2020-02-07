@@ -17,13 +17,13 @@ export default class followButton extends PureComponent {
     console.log(ifollow)
 
     if (ifollow) {
-      return <Button style={{ width: winWidth, margin: 7 }}
+      return <Button buttonStyle={{ width: winWidth, margin: 7, backgroundColor: Colors.tertiary }}
         title='unfollow'
         color='grey'
       >
       </Button>
     } else {
-      return <Button style={{ width: winWidth }}
+      return <Button buttonStyle={{ width: winWidth, margin: 7, backgroundColor: Colors.primary }}
         title='follow'
         color={Colors.primary}
       >
