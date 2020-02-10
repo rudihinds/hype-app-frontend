@@ -29,13 +29,13 @@ export default class SubmitPostScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      caption: '',
+      title: 'yolo',
+      caption: 'yolo2',
       latitude: null,
       longitude: null,
       tags: {
         tag: '',
-        tagsArray: []
+        tagsArray: ['blood', 'floods', 'your', 'dungarees']
       },
       captures: {},
       preview: null,
@@ -135,16 +135,13 @@ export default class SubmitPostScreen extends Component {
   }
 
   submitHandler = (post) => {
-    // let objectify = post.tags.tagsArray.map(tag => tag )
-    console.log(post.tags.tagsArray)
-    // console.log('stringy:', JSON.stringify(post.tags.tagsArray))
     let newPost = new FormData()
     let headers = new Headers()
     headers.append('Accept', 'application/json')
     // let uri = post.uri.replace("file://", "")
     let type = post.uri.split('.').pop()
 
-    newPost.append('photo', {
+    newPost.append('image', {
       uri: post.uri,
       name: post.title,
       type: `image/${type}`
@@ -152,24 +149,18 @@ export default class SubmitPostScreen extends Component {
 
     newPost.append('title', post.title)
     newPost.append('description', post.caption)
-    newPost.append('tags', post.tags.tagsArray)
+    newPost.append('tags', JSON.stringify(post.tags.tagsArray))
     newPost.append('longitude', post.longitude)
     newPost.append('latitude', post.latitude)
     newPost.append('user_id', post.userId)
 
-    const options = {
+    let req = new Request('http://localhost:3000/posts', {
       method: 'POST',
       body: newPost,
-      headers: headers
-    };
-
-    let req = new Request(newPost, options)
-
-    // fetch('http://localhost:3000/posts', options).then(res => res.json()).then(console.log)
+      headers
+    })
 
     fetch(req).then(res => res.json()).then(console.log)
-
-
   }
 
   grabCoords = (location) => {
