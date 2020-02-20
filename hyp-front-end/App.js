@@ -1,14 +1,43 @@
 import React from 'react';
 import SearchScreen from './screens/SearchScreen'
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import HypeAppNavigator from './navigation/HypeAppNavigator'
+import { createSwitchNavigator, createAppContainer } from 'react-navigation'
+import LoginScreen from './screens/LoginScreen'
+import LoadingScreen from './screens/LoadingScreen'
+import DashBoardScreen from './screens/DashBoardScreen'
+import firebase from 'firebase'
+import { firebaseConfig } from './config'
 
+firebase.initializeApp(firebaseConfig)
+export default class App extends React.Component {
 
-export default function App() {
+  render() {
     return (
-      // <View>
-      //   <SearchScreen />
-      // </View>
-      <HypeAppNavigator />
+      <View style={styles.container}>
+        {/* //   <SearchScreen />
+
+      // <HypeAppNavigator /> */}
+        <AppNavigator />
+      </View>
     );
+  }
 }
+
+const AppSwitchNavigator = createSwitchNavigator({
+  LoadingScreen,
+  LoginScreen,
+  DashBoardScreen,
+  SearchScreen
+})
+
+const AppNavigator = createAppContainer(AppSwitchNavigator)
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+})
