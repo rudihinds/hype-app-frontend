@@ -12,30 +12,45 @@ export default class PostsList extends Component {
     };
   }
 
-  componentDidMount = () => {
-    //this posts list needs its own brain as it will be used by many features to render different lists, even
-    //the fetch needs to be dynamic based on some url route passed down to hit
-    API.getPosts()
-      .then(posts => this.setState({ posts }))
-  };
-
+  // componentDidMount = () => {
+  //   //this posts list needs its own brain as it will be used by many features to render different lists, even
+  //   //the fetch needs to be dynamic based on some url route passed down to hit
+  //   API.getPosts()
+  //     .then(posts => this.setState({ posts }))
+  // };
 
   render() {
-    const { posts } = this.state
+    const { usersPosts } = this.props
+    // this.props.map(post => console.log(post))
+    // this.props.usersPosts.map(post => console.log(post.video))
+
+    // console.log(this.props)
 
     return (
-      
+      // <View>
+      //   <FlatList
+      //    keyExtractor={item => item.id.toString()}
+      //    data={usersPosts}
+      //    renderItem={({ item }) => (
+      //      <View>
+      //        <Text>
+      //          hello
+      //        </Text>
+      //     </View>
+      //    )}
+      //   />
+        
       <View>
+         
         <FlatList
-          keyExtractor={item => item.postBelongsTo}
-          data={posts}
+          keyExtractor={item => item.id.toString()}
+          data={usersPosts}
           renderItem={({ item }) => (
-
             <View>
-              <TouchableOpacity onPress={() => props.navigation.navigate('PostScreen',
-                { item }
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('PostScreen',
+                {item}
               )} >
-                <Image source={{ uri: "https://picsum.photos/300" }}
+                <Image source={{ uri: item.video }}
                   style={{
                     width: '100%',
                     height: 250,
@@ -50,19 +65,19 @@ export default class PostsList extends Component {
                     <Avatar rounded source={{ uri: 'https://i.pravatar.cc/' }} />
                   </View>
                   <View style={{ flex: 7 }}>
-                    <Text style={{ flex: 1, flexDirection: 'column', marginBottom: 3 }}>{item.postTitle} | {item.tags}</Text>
+                    <Text style={{ flex: 1, flexDirection: 'column', marginBottom: 3 }}>{item.title} |  {item.title}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
             </View>
           )} />
-        {/* <Button
+        <Button
           type='outline'
           buttonStyle={{ borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0 }}
           title='Back To Search'
           onPress={() => props.navigation.goBack()}
-        /> */}
-      </View>
+        />
+        </View>
     );
   }
 }

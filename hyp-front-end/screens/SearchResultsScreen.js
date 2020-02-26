@@ -13,16 +13,17 @@ const SearchResultsScreen = props => {
     const fetchComments = () => {
       //get posts will send a search term down in live version and return the posts for that search term
       //will receive props from wherever request is sent, ie string of search, can use this as my posts page
-      API.getPosts()
-        .then(results => setResultsList(results))
+      // API.getPosts()
+      //   .then(results => setResultsList(results))
+      setResultsList(props.navigation.state.params.posts)
     }
     fetchComments()
   }, [])
 
-  console.log(resultsList, "fuck off")
+  // console.log(resultsList)
 
   return (
-
+    
     <View>
       <FlatList
         keyExtractor={item => item.postBelongsTo}
@@ -33,7 +34,7 @@ const SearchResultsScreen = props => {
             <TouchableOpacity onPress={() => props.navigation.navigate('PostScreen',
               { item }
             )} >
-              <Image source={{ uri: "https://picsum.photos/300" }}
+              <Image source={{ uri: item.video }}
                 style={{
                   width: '100%',
                   height: 250,
@@ -45,10 +46,10 @@ const SearchResultsScreen = props => {
                 justifyContent: 'space-around'
               }}>
                 <View style={{ flex: 1 }}>
-                  <Avatar rounded source={{ uri: 'https://i.pravatar.cc/' }} />
+                  <Avatar rounded source={{ uri: item.user.image }} />
                 </View>
                 <View style={{ flex: 7 }}>
-                  <Text style={{ flex: 1, flexDirection: 'column', marginBottom: 3 }}>{item.postTitle}</Text>
+                  <Text style={{ flex: 1, flexDirection: 'column', marginBottom: 3 }}>{item.title}</Text>
                 </View>
               </View>
             </TouchableOpacity>

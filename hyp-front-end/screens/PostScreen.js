@@ -17,8 +17,8 @@ import Comment from '../components/Comment'
 
 const PostScreen = props => {
   const postProps = props.navigation.state.params.item
-
-
+  const { item } = props.navigation.state.params
+  console.log(item)
 
   return (
 
@@ -44,7 +44,7 @@ const PostScreen = props => {
       <View style={styles.red}>
         <View style={styles.postDetails}>
           <PostAvatar />
-          <PostTitleTags title={postProps.postTitle} tags={postProps.tags} />
+          <PostTitleTags title={item.title} tags={postProps.tags} />
         </View>
       </View>
       <CommentsContainer postId={postProps.id} />

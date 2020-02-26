@@ -10,6 +10,7 @@ import SearchField from '../components/SearchField'
 import { Button as IconButton } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import Colors from '../constants/Colors'
+import API from '../adapters/API';
 // import VideoScreen from '../screens/VideoScreen'
 
 
@@ -25,7 +26,14 @@ export default function SearchScreen(props) {
   }
 
 
-  return (
+searchHandler = () => {
+  console.log(value)
+  API.getPostSearchResults(value).then(posts => props.navigation.navigate('SearchResultsScreen', {posts}))
+
+}
+
+
+return (
 
     <View style={{ flex: 1 }}>
       <View style={styles.cameraButton}>
@@ -60,10 +68,14 @@ export default function SearchScreen(props) {
           onChangeText={text => setChangeText(text)}
           value={value}
         />
-        <Button title={"Search"} onPress={() => {
-          if (value !== '')
-            props.navigation.navigate('SearchResultsScreen')
-        }} />
+         <Button 
+          title={"Search"} 
+          onPress={() => {
+            if (value !== '')
+            this.searchHandler()
+              
+          }
+          } />
       </View>
     </View>
 

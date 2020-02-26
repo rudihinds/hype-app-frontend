@@ -6,18 +6,30 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import Colors from '../constants/Colors'
 import FollowButton from '../components/FollowButton'
 import PostsList from '../components/PostsList'
+import API from '../adapters/API';
+
+
 
 
 export default class UserShowScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      posts: []
     };
   }
 
-  static navigationOptions = ({ navigation }) => {
-    const { username } = navigation.state.params.user
+  componentDidMount = () => {
+    API.getUsersPosts(1).then(posts => 
+        this.setState({posts: posts})
+      )
+  }
 
+  static navigationOptions = ({ navigation }) => {
+    // console.log(navigation.state.params.user);
+    
+    // const username = navigation.state.params.user.username || 'Rudi'
+const username = 'rudi'
     return {
       headerLeft: () => (
         <HeaderButtons>
@@ -42,23 +54,37 @@ export default class UserShowScreen extends Component {
     }
   }
 
+  // render () {
+  //   return (
+  //     <View>
+  //       <Text>h1</Text>
+  //       {
+  //         this.state.posts.map(post => <PostsList usersPosts={post} /> )
+  //       }
+  //     </View>
+  //   )
+  // }
+
   render() {
-    const { user: {
-      postAmount,
-      followers, 
-      following,
-      userBio,
-      firstName,
-      lastName,
-      iFollow
-    } } = this.props.navigation.state.params
+    // const { user: {
+    //   postAmount,
+    //   followers, 
+    //   following,
+    //   userBio,
+    //   firstName,
+    //   lastName,
+    //   iFollow,
+    //   usersPosts
+    // } } = this.props.navigation.state.params
 
     return (
       <View style={styles.window}>
-        <UserProfileInfoBar postAmount={postAmount} followers={followers} following={following} />
+        {/* <UserProfileInfoBar postAmount={postAmount} followers={followers} following={following} />
         <UserBio userBio={userBio} firstName={firstName} surname={lastName} />
-        <FollowButton ifollow={iFollow}  />
-        <PostsList />
+        <FollowButton ifollow={iFollow}  /> */}
+        
+        <PostsList usersPosts={this.state.posts} navigation={this.props.navigation}  />
+        
       </View>
     );
   }
