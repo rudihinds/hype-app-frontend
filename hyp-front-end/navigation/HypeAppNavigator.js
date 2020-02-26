@@ -19,11 +19,9 @@ const HypeAppNavigator = createStackNavigator({
   ImageStillScreen,
   FindFriendsScreen,
   UserShowScreen,
-
-}, {
-  initialRouteName: 'VideoScreen'
-}
-
-)
+},
+  {
+    initialRouteName: 'SearchScreen'
+  })
 
 export default createAppContainer(HypeAppNavigator)

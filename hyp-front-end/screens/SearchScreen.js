@@ -24,36 +24,37 @@ export default function SearchScreen(props) {
     props.navigation.navigate('VideoScreen')
   }
 
-  return (
-    <>
-      <View>
-        <View style={styles.cameraButton}>
-          <IconButton
-            
-            icon={<Icon
-              name='camera'
-              size={33}
-              color={Colors.primary}
-            />} 
-            type='clear'
-            onPress={startCamera}
-            />
-        </View>
-        <View style={styles.screen}>
 
-          {/* <SearchField visible={isAddMode} getValue={getValue} /> */}
-          <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-            onChangeText={text => setChangeText(text)}
-            value={value}
-          />
-          <Button title={"Search"} onPress={() => {
-            if (value !== '')
-              props.navigation.navigate('SearchResultsScreen')
-          }} />
-        </View>
+  return (
+
+    <View style={{ flex: 1 }}>
+      <View style={styles.cameraButton}>
+        <IconButton
+
+          icon={<Icon
+            name='camera'
+            size={33}
+            color={Colors.primary}
+          />}
+          type='clear'
+          onPress={startCamera}
+        />
       </View>
-    </>
+      <View style={styles.screen}>
+
+        {/* <SearchField visible={isAddMode} getValue={getValue} /> */}
+        <TextInput
+          style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+          onChangeText={text => setChangeText(text)}
+          value={value}
+        />
+        <Button title={"Search"} onPress={() => {
+          if (value !== '')
+            props.navigation.navigate('SearchResultsScreen')
+        }} />
+      </View>
+    </View>
+
   );
 }
 

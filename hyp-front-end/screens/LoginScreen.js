@@ -14,7 +14,7 @@ export default class LoginScreen extends Component {
     // We need to register an Observer on Firebase Auth to make sure auth is initialized.
     var unsubscribe = firebase.auth().onAuthStateChanged(function (firebaseUser) {
       unsubscribe();
-      console.log('hello', googleUser, firebaseUser);
+      // console.log('hello', googleUser, firebaseUser);
 
       // Check if we are already signed-in Firebase with the correct user.
       if (!this.isUserEqual(googleUser, firebaseUser)) {
@@ -27,7 +27,7 @@ export default class LoginScreen extends Component {
         firebase.auth()
           .signInWithCredential(credential)
           .then(function (result) {
-            console.log('user signed in')
+            console.log('user signed in with credential')
             if (result.additionalUserInfo.isNewUser) {
               firebase
                 .database()

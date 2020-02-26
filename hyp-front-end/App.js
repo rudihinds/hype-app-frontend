@@ -14,12 +14,9 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {/* //   <SearchScreen />
-
-      // <HypeAppNavigator /> */}
-        <AppNavigator />
-      </View>
+      // <View style={styles.container}>
+      <AppNavigator />
+      /* </View> */
     );
   }
 }
@@ -28,7 +25,7 @@ const AppSwitchNavigator = createSwitchNavigator({
   LoadingScreen,
   LoginScreen,
   DashBoardScreen,
-  SearchScreen
+  Dashboard: { screen: HypeAppNavigator }
 })
 
 const AppNavigator = createAppContainer(AppSwitchNavigator)
