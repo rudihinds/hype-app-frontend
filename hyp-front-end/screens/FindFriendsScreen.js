@@ -56,7 +56,9 @@ export default class FindFriendsScreen extends Component {
   componentDidMount = () => {
     // console.log(this.getSelectedList())
     this.props.navigation.setParams({ selectedList: this.state.selectedList })
-    fetch('https://bbc9d876.ngrok.io/users').then(res => res.json()).then(userList => this.setState({ userList }))
+    fetch('http://localhost:3000/users').then(res => res.json())
+      .then(userList => this.setState({ userList }))
+      .catch(error => console.log(error))
   };
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -101,7 +103,11 @@ export default class FindFriendsScreen extends Component {
   }
 
   render() {
-    const { user: { username, followersAmount, followingsAmount, postsAmount }, searchInput, userList, selectedList } = this.state
+    console.log(this.state.userList.users);
+
+    const { users } = this.state.userList
+    const { user: { username, followersAmount, followingsAmount, postsAmount }, searchInput, selectedList } = this.state
+
     return (
       <View style={styles.window}>
         <View style={styles.infoBar}>
@@ -125,16 +131,16 @@ export default class FindFriendsScreen extends Component {
         </View>
         <View>
           <FlatList
-            keyExtractor={item => item.userId.toString()}
-            data={userList}
+            keyExtractor={item => item.id.toString()}
+            data={users}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => this.handleShowUser(item)}>
                 <ListItem
-                  leftAvatar={{ source: { uri: 'https://i.pravatar.cc/' } }}
+                  leftAvatar={{ source: { uri: item.image } }}
                   bottomDivider
-                  title={item.username}
-                  subtitle={item.firstName + " " + item.lastName}
-                  subtitleStyle={{ color: Colors.tertiary }}
+                  title={item.name}
+                  // subtitle={item.firstName + " " + item.lastName}
+                  // subtitleStyle={{ color: Colors.tertiary }}
                   rightElement={<Button
                     title="follow"
                     buttonStyle={styles.button}

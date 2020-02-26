@@ -40,6 +40,18 @@ export default function SearchScreen(props) {
           onPress={startCamera}
         />
       </View>
+      <View style={styles.friendsButton}>
+        <IconButton
+
+          icon={<Icon
+            name='heart'
+            size={33}
+            color={Colors.primary}
+          />}
+          type='clear'
+          onPress={() => props.navigation.navigate('FindFriendsScreen')}
+        />
+      </View>
       <View style={styles.screen}>
 
         {/* <SearchField visible={isAddMode} getValue={getValue} /> */}
@@ -65,6 +77,12 @@ const styles = StyleSheet.create({
   cameraButton: {
     height: 200,
     width: 77,
+    padding: 10
+
+  },
+  friendsButton: {
+    height: 200,
+    width: 150,
     padding: 10
 
   }
