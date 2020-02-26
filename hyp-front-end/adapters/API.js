@@ -5,8 +5,8 @@ const usersUrl = `${apiEndpoint}/users`
 const loginUrl = `${apiEndpoint}/login`
 const validateUrl = `${apiEndpoint}/validate`
 const postsUrl = `${apiEndpoint}/posts`
-const searchUrl = `${apiEndpoint}/search`
-
+const searchUrl = `${apiEndpoint}/searchposts`
+const usersPostsUrl = `${apiEndpoint}/getUsersPosts` 
 
 const jsonify = res => {
   return res.json()
@@ -52,9 +52,25 @@ const addNewComment = (comment, postId) => {
   }).then(jsonify)
 }
 
+const getUsersPosts = userId => {
+  return fetch(`${usersPostsUrl}/${userId}`).then(jsonify)
+}
+
+const getPostSearchResults = tag => {
+  return fetch(searchUrl, {
+    method: 'POST',
+    headers: constructHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ tag }),
+    redirect: 'manual'
+  }).then(jsonify)
+
+}
+
 export default {
   getPosts,
   addNewComment,
   getPostData,
-  createPost
+  createPost,
+  getUsersPosts,
+  getPostSearchResults
 }

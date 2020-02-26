@@ -76,7 +76,6 @@ export default class SubmitPostScreen extends Component {
     }
   }
 
-
   componentDidMount = () => {
     const { captures } = this.props.navigation.state.params
 
