@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Alert } from 'react-native';
 import firebase from 'firebase'
+import API from '../adapters/API'
 
 
 export default class LoadingScreen extends Component {
@@ -17,9 +18,30 @@ export default class LoadingScreen extends Component {
   checkIfLoggedIn = () => {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log('heres the user: ', user)
-        this.props.navigation.navigate('DashBoardScreen')
+        // user is logged in
+        console.log('user is signed in');
+
+        firebase.auth().currentUser.getIdToken(true)
+          .then(token => API.setCurrentUser(token))
+          .then((user) => {
+            console.log('got the user from the back:');
+            // debugger
+            // console.log(user.user.uid, firebase.auth().currentUser.uid);
+            if (user.user.uid == firebase.auth().currentUser.uid) {
+              console.log('matched ids');
+              this.props.navigation.navigate('SearchScreen')
+            } else {
+              console.log("couldnt match ids");
+              Alert.alert('error: could not find user')
+              firebase.auth().signOut()
+              this.props.navigation.navigate('LoginScreen')
+            }
+          })
+          .catch(error => Alert.alert("error: ", error))
       } else {
+        // user is signed out
+        console.log('user is signed out');
+
         this.props.navigation.navigate('LoginScreen')
       }
     })

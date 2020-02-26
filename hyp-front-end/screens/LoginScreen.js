@@ -11,10 +11,11 @@ export default class LoginScreen extends Component {
   }
 
   onSignIn = googleUser => {
-    console.log('Google Auth Response', googleUser);
     // We need to register an Observer on Firebase Auth to make sure auth is initialized.
     var unsubscribe = firebase.auth().onAuthStateChanged(function (firebaseUser) {
       unsubscribe();
+      console.log('hello', googleUser, firebaseUser);
+
       // Check if we are already signed-in Firebase with the correct user.
       if (!this.isUserEqual(googleUser, firebaseUser)) {
         // Build Firebase credential with the Google ID token.
@@ -66,6 +67,8 @@ export default class LoginScreen extends Component {
   }
 
   isUserEqual = (googleUser, firebaseUser) => {
+    console.log("g: ", googleUser, "f: ", firebaseUser);
+
     if (firebaseUser) {
       var providerData = firebaseUser.providerData;
       for (var i = 0; i < providerData.length; i++) {

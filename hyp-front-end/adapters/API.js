@@ -1,4 +1,5 @@
 
+
 // const apiEndpoint = 'https://bbc9d876.ngrok.io'
 const apiEndpoint = 'http://localhost:3000'
 const usersUrl = `${apiEndpoint}/users`
@@ -6,6 +7,8 @@ const loginUrl = `${apiEndpoint}/login`
 const validateUrl = `${apiEndpoint}/validate`
 const postsUrl = `${apiEndpoint}/posts`
 const searchUrl = `${apiEndpoint}/search`
+const setCurrentUserUrl = `${apiEndpoint}/set_current_user`
+// const token = firebase.auth().currentUser.getIdToken(true).then(token => token)
 
 
 const jsonify = res => {
@@ -52,9 +55,19 @@ const addNewComment = (comment, postId) => {
   }).then(jsonify)
 }
 
+const setCurrentUser = token => {
+
+  return fetch(setCurrentUserUrl, {
+    method: 'POST',
+    headers: constructHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify(token)
+  }).then(jsonify)
+}
+
 export default {
   getPosts,
   addNewComment,
   getPostData,
-  createPost
+  createPost,
+  setCurrentUser
 }
