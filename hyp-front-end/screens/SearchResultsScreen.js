@@ -20,10 +20,10 @@ const SearchResultsScreen = props => {
     fetchComments()
   }, [])
 
-  console.log(resultsList)
+  // console.log(resultsList)
 
   return (
-
+    
     <View>
       <FlatList
         keyExtractor={item => item.postBelongsTo}
