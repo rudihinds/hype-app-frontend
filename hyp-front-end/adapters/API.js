@@ -6,15 +6,10 @@ const usersUrl = `${apiEndpoint}/users`
 const loginUrl = `${apiEndpoint}/login`
 const validateUrl = `${apiEndpoint}/validate`
 const postsUrl = `${apiEndpoint}/posts`
-<<<<<<< HEAD
-const searchUrl = `${apiEndpoint}/search`
+// const searchUrl = `${apiEndpoint}/search`
 const setCurrentUserUrl = `${apiEndpoint}/set_current_user`
-// const token = firebase.auth().currentUser.getIdToken(true).then(token => token)
-
-=======
 const searchUrl = `${apiEndpoint}/searchposts`
 const usersPostsUrl = `${apiEndpoint}/getUsersPosts` 
->>>>>>> 5897cde72d38aefba8c59dfcfe73b26ed1c415c5
 
 const jsonify = res => {
   return res.json()
@@ -60,7 +55,6 @@ const addNewComment = (comment, postId) => {
   }).then(jsonify)
 }
 
-<<<<<<< HEAD
 const setCurrentUser = token => {
 
   return fetch(setCurrentUserUrl, {
@@ -68,7 +62,8 @@ const setCurrentUser = token => {
     headers: constructHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(token)
   }).then(jsonify)
-=======
+}
+
 const getUsersPosts = userId => {
   return fetch(`${usersPostsUrl}/${userId}`).then(jsonify)
 }
@@ -81,7 +76,6 @@ const getPostSearchResults = tag => {
     redirect: 'manual'
   }).then(jsonify)
 
->>>>>>> 5897cde72d38aefba8c59dfcfe73b26ed1c415c5
 }
 
 export default {
@@ -89,10 +83,7 @@ export default {
   addNewComment,
   getPostData,
   createPost,
-<<<<<<< HEAD
-  setCurrentUser
-=======
+  setCurrentUser,
   getUsersPosts,
   getPostSearchResults
->>>>>>> 5897cde72d38aefba8c59dfcfe73b26ed1c415c5
 }
