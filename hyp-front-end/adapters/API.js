@@ -57,6 +57,7 @@ const getUsersPosts = userId => {
 }
 
 const getPostSearchResults = tag => {
+  console.log(tag)
   return fetch(searchUrl, {
     method: 'POST',
     headers: constructHeaders({ 'Content-Type': 'application/json' }),
