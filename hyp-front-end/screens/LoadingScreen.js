@@ -1,68 +1,75 @@
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Alert } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, Button } from 'react-native';
 import firebase from 'firebase'
 import API from '../adapters/API'
-import HypeAppNavigator from '../navigation/HypeAppNavigator'
-
+import * as Google from 'expo-google-app-auth';
+import { AsyncStorage } from 'react-native';
 
 export default class LoadingScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      signingIn: false
     };
   }
 
   componentDidMount = () => {
-    this.checkIfLoggedIn()
+    // this.checkIfLoggedIn()
+    AsyncStorage.getItem('token').then(token => console.log('token from get async: ', token));
   };
 
-  checkIfLoggedIn = () => {
-    firebase.auth().signOut()
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        // user is logged in
-        console.log('user is signed in');
+  signInWithGoogleAsync = async () => {
+    this.setState({ signingIn: true })
+    try {
+      const result = await Google.logInAsync({
+        // behavior: 'web',
+        iosClientId: '214206807961-mg9102p9h7l534sp78abfeft1gm4tpo0.apps.googleusercontent.com',
+        scopes: ['profile', 'email'],
+      });
 
-        firebase.auth().currentUser.getIdToken(true)
-          .then(token => API.setCurrentUser(token))
-          .then((user) => {
-            console.log('got the user from the back:');
-            // debugger
-            // console.log(user.user.uid, firebase.auth().currentUser.uid);
-            if (user.user.uid == firebase.auth().currentUser.uid) {
-              console.log('matched ids');
-              this.props.navigation.navigate('Dashboard')
+      if (result.type === 'success') {
+        // console.log(result.idToken);
 
-              // return <HypeAppNavigator />
-              // this.props.navigation.navigate('SearchScreen')
-            } else {
-              console.log("couldnt match ids");
-              Alert.alert('error: could not find user')
-              firebase.auth().signOut()
-              this.props.navigation.navigate('LoginScreen')
-            }
+        //send token from google signin to server to authenticate user and receive JWT token back to store for future reqs
+        API.signInWithGoogle(result.idToken)
+          .then(res => {
+            // console.log(res.token);
+            console.log('new token from google sign in: ', res.token);
+            AsyncStorage.setItem('token', res.token)
+            // console.log('response: ', res)
           })
-          .catch(error => {
-            firebase.auth().signOut()
-            this.props.navigation.navigate('LoginScreen')
-            console.log('I caught an error instead of getting the id token from firebase verified on the backend', error)
-            // console.log(firebase.auth().currentUser.getIdToken(true).then(console.log))
-          })
+          .then(() => this.props.navigation.navigate('PostScreen'))
 
-        // Alert.alert("error: ", error)
       } else {
-        // user is signed out
-        console.log('user is signed out');
-
-        this.props.navigation.navigate('LoginScreen')
+        console.log('hit couldnt login with google conditional');
+        console.log('google.loginAsync didnt work, couldnt get google user obj');
+        this.setState({ signingIn: false })
+        return { cancelled: true };
       }
-    })
+    } catch (e) {
+      return { error: true, e };
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size='large' />
+        {this.state.signingIn ?
+          <ActivityIndicator size='large' />
+          :
+          <Button
+            title='sign in with Google'
+            onPress={() => this.signInWithGoogleAsync()}
+          />
+        }
+        <Button
+          title='get users'
+          onPress={() => {
+            API.getUsers().then(res => {
+              console.log(res);
+            })
+          }}
+        />
       </View>
     );
   }

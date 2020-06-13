@@ -6,25 +6,29 @@ import { createSwitchNavigator, createAppContainer } from 'react-navigation'
 import LoginScreen from './screens/LoginScreen'
 import LoadingScreen from './screens/LoadingScreen'
 import DashBoardScreen from './screens/DashBoardScreen'
+import PostScreen from './screens/DashBoardScreen'
 import firebase from 'firebase'
 import { firebaseConfig } from './config'
+import { Provider } from 'react-redux'
+import store from './store'
 
-firebase.initializeApp(firebaseConfig)
 export default class App extends React.Component {
 
   render() {
     return (
       // <View style={styles.container}>
-      <AppNavigator />
+      <Provider store={store}>
+        <AppNavigator />
+      </Provider>
       /* </View> */
     );
   }
 }
 
 const AppSwitchNavigator = createSwitchNavigator({
-  LoadingScreen,
-  LoginScreen,
-  DashBoardScreen,
+  // LoadingScreen,
+  // LoginScreen,
+  // DashBoardScreen,
   Dashboard: { screen: HypeAppNavigator }
 })
 

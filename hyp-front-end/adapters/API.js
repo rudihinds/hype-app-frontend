@@ -9,22 +9,28 @@ const postsUrl = `${apiEndpoint}/posts`
 // const searchUrl = `${apiEndpoint}/search`
 const setCurrentUserUrl = `${apiEndpoint}/set_current_user`
 const searchUrl = `${apiEndpoint}/searchposts`
-const usersPostsUrl = `${apiEndpoint}/getUsersPosts` 
+const usersPostsUrl = `${apiEndpoint}/getUsersPosts`
+const googleSignInUrl = `${usersUrl}/googleSignIn`
+import { AsyncStorage } from 'react-native'
 
-const jsonify = res => {
-  return res.json()
-}
 
-const handleServerError = response => {
-  console.log('handle error: ', response)
-  return { errors: response.errors }
-}
+const jsonify = res => res.json()
 
-const constructHeaders = (moreHeaders = {}) => (
-  {
-    ...moreHeaders
+const handleErrors = response => {
+  if (!response.ok) {
+    throw Error(response.statusText)
+  } else {
+    return response
   }
-)
+}
+
+const constructHeaders = async (moreHeaders = {}) => {
+  const token = await AsyncStorage.getItem('token')
+  return {
+    ...moreHeaders,
+    Authorization: `Bearer ${token}`
+  }
+}
 
 const getPosts = () => {
   return fetch(postsUrl).then(jsonify)
@@ -78,6 +84,24 @@ const getPostSearchResults = tag => {
 
 }
 
+const signInWithGoogle = async (idToken) => {
+  let headers = await constructHeaders({ 'Content-Type': 'application/json' })
+  return fetch(googleSignInUrl, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ idToken })
+  }).then(jsonify)
+    .catch(e => console.log('error :', e))
+}
+
+const getUsers = async () => {
+  let headers = await constructHeaders()
+  return fetch(usersUrl, { headers })
+    .then(handleErrors)
+    .then(jsonify)
+    .catch(e => console.log('error in get users on client: ', e))
+}
+
 export default {
   getPosts,
   addNewComment,
@@ -85,5 +109,7 @@ export default {
   createPost,
   setCurrentUser,
   getUsersPosts,
-  getPostSearchResults
+  getPostSearchResults,
+  signInWithGoogle,
+  getUsers
 }
