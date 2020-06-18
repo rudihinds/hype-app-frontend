@@ -6,8 +6,8 @@ import API from '../adapters/API'
 import samplePosts from '../db/sampleComments'
 
 const SearchResultsScreen = props => {
-  const [resultsList, setResultsList] = React.useState([]);
-  const [newComment, setNewComment] = React.useState("")
+  // const [resultsList, setResultsList] = React.useState([]);
+  // const [newComment, setNewComment] = React.useState("")
 
   useEffect(() => {
     const fetchComments = () => {
@@ -15,7 +15,7 @@ const SearchResultsScreen = props => {
       //will receive props from wherever request is sent, ie string of search, can use this as my posts page
       // API.getPosts()
       //   .then(results => setResultsList(results))
-      setResultsList(props.navigation.state.params.posts)
+      // setResultsList(props.navigation.state.params.posts)
     }
     fetchComments()
   }, [])

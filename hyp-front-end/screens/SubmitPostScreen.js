@@ -20,8 +20,6 @@ import Colors from '../constants/Colors'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import API from '../adapters/API';
 
-
-
 const mainColor = '#3ca897';
 
 

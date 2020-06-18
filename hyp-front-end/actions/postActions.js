@@ -1,21 +1,21 @@
-import { FETCH_POSTS, NEW_POST } from './types'
-console.log('fetch posts in post ACTIONS: ', FETCH_POSTS);
+import API from '../adapters/API'
+import { FETCH_ALL_POSTS, NEW_POST } from './types'
 
-export const fetchPosts = () => dispatch => {
-  console.log('running fetxh podsts in posdt Actions');
+export const getAllPosts = () => async dispatch => {
+  console.log('get all posts action hit');
 
-  fetch('http://localhost:3000/posts')
-    .then(res => res.json())
-    .then(data => dispatch({ type: FETCH_POSTS, payload: data }))
+  const allPosts = await API.getAllPosts()
+  dispatch({ type: FETCH_ALL_POSTS, payload: allPosts })
 }
 
 export const createPost = post => dispatch => {
-  console.log('action called, post is:', post);
   fetch('http://localhost:3000/posts', {
     method: 'POST',
     body: JSON.stringify(post),
     headers: { 'Content-type': "Application/json" }
-  }).then(res => res.json()).then(data => dispatch({ type: NEW_POST, payload: data }))
+  })
+    .then(res => res.json())
+    .then(data => dispatch({ type: NEW_POST, payload: data }))
 
   // .then(post => dispatch({
   //   type: NEW_POST,

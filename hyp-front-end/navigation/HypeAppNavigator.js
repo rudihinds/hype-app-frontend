@@ -8,11 +8,13 @@ import SubmitPostScreen from '../screens/SubmitPostScreen'
 import ImageStillScreen from '../screens/ImageStillScreen'
 import FindFriendsScreen from '../screens/FindFriendsScreen'
 import UserShowScreen from '../screens/UserShowScreen'
+import PostsWallScreen from '../screens/PostsWallScreen'
 
 
 const HypeAppNavigator = createStackNavigator({
   SearchScreen,
   SearchResultsScreen,
+  PostsWallScreen,
   PostScreen,
   VideoScreen,
   SubmitPostScreen,
@@ -21,7 +23,7 @@ const HypeAppNavigator = createStackNavigator({
   UserShowScreen,
 },
   {
-    initialRouteName: 'PostScreen'
+    initialRouteName: 'PostsWallScreen'
   })
 
 export default createAppContainer(HypeAppNavigator)

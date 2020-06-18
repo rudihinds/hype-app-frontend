@@ -32,7 +32,7 @@ const constructHeaders = async (moreHeaders = {}) => {
   }
 }
 
-const getPosts = () => {
+const getAllPosts = () => {
   return fetch(postsUrl).then(jsonify)
 }
 
@@ -52,24 +52,6 @@ const getPostData = postId => {
   return fetch(`${postsUrl}/${postId}`).then(jsonify)
 }
 
-const addNewComment = (comment, postId) => {
-  return fetch(`${postsUrl}/${postId}`, {
-    method: 'PATCH',
-    headers: constructHeaders({ 'Content-Type': 'application/json' }),
-    body: JSON.stringify({ comment }),
-    redirect: 'manual'
-  }).then(jsonify)
-}
-
-const setCurrentUser = token => {
-
-  return fetch(setCurrentUserUrl, {
-    method: 'POST',
-    headers: constructHeaders({ 'Content-Type': 'application/json' }),
-    body: JSON.stringify(token)
-  }).then(jsonify)
-}
-
 const getUsersPosts = userId => {
   return fetch(`${usersPostsUrl}/${userId}`).then(jsonify)
 }
@@ -82,7 +64,15 @@ const getPostSearchResults = tag => {
     body: JSON.stringify({ tag }),
     redirect: 'manual'
   }).then(jsonify)
+}
 
+const addNewComment = (comment, postId) => {
+  return fetch(`${postsUrl}/${postId}`, {
+    method: 'PATCH',
+    headers: constructHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ comment }),
+    redirect: 'manual'
+  }).then(jsonify)
 }
 
 const signInWithGoogle = async (idToken) => {
@@ -103,13 +93,22 @@ const getUsers = async () => {
     .catch(e => console.log('error in get users on client: ', e))
 }
 
+const setCurrentUser = token => {
+
+  return fetch(setCurrentUserUrl, {
+    method: 'POST',
+    headers: constructHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify(token)
+  }).then(jsonify)
+}
+
 export default {
-  getPosts,
-  addNewComment,
+  getAllPosts,
   getPostData,
   createPost,
-  setCurrentUser,
   getUsersPosts,
+  setCurrentUser,
+  addNewComment,
   getPostSearchResults,
   signInWithGoogle,
   getUsers

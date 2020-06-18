@@ -23,9 +23,9 @@ class PostScreen extends Component {
 
   componentDidMount = () => {
     console.log('hi');
-    // this.props.fetchPosts()
     this.props.createPost({ id: 2, post: 'hi im a post' })
     // console.log('posts in component: ', this.props.posts);
+    // console.log('newpost in component: ', this.props.newPost);
     // console.log('props: ', this.props);
 
 
@@ -33,9 +33,8 @@ class PostScreen extends Component {
   render() {
     // console.log('props.posts: ', this.props.posts);
     // console.log(this.props.newPost)
-
-
-
+    console.log('posts in component render: ', this.props.posts[0]);
+    console.log('newpost in component render: ', this.props.newPost);
 
     return (
       <View>
@@ -115,13 +114,7 @@ PostScreen.navigationOptions = navigationData => {
   }
 }
 
-const mapStateToProps = state => ({
-  posts: state.posts.items,
-  newPost: state.posts.item
-
-})
-
 // const mapDispatchToProps = dispatch
 
-export default connect(mapStateToProps, { fetchPosts, createPost })(PostScreen)
+export default PostScreen
 
