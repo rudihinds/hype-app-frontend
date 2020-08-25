@@ -1,38 +1,88 @@
-import { FETCH_ALL_POSTS, NEW_POST } from '../actions/types'
+import {
+  FETCH_ALL_POSTS,
+  NEW_POST,
+  HANDLE_SEARCH,
+  HANDLE_SEARCHED_POSTS,
+  COMMENT_HANDLER,
+  HANDLE_LOGGED_USER,
+  HANDLE_FOLLOW_SWITCH,
+  HANDLE_SHOW_FOLLOWERS,
+  HANDLE_SHOW_FOLLOWED,
+  HANDLE_FOLLOW_ACTION,
+  HANDLE_UNFOLLOW_ACTION,
+} from "../actions/types";
 
 const initialState = {
   allPosts: [],
-  item: {}
-}
+  item: {},
+  searchInput: "",
+  commentInput: "",
+  searchedPosts: [],
+  user: {},
+  shownUser: {},
+  friendsDisplay: "followers",
+};
 
 export default (state = initialState, action) => {
-  // console.log("inside postReducer");
-  // console.log('action type: ', action ? action.type : "");
-  // console.log('action payload: ', action ? action.payload : "");
-
-
   switch (action.type) {
     case FETCH_ALL_POSTS:
-      console.log('get all posts reducer hit payload: ');
-      console.log('hit fetch posts switch condition,next line ');
-
-
       return {
         ...state,
-        allPosts: action.payload
-      }
+        allPosts: action.payload,
+      };
     case NEW_POST:
-      // console.log('hit new post switch condition', action.payload, action.type);
       return {
         ...state,
-        item: action.payload
-      }
-
-    default:
-      // console.log('hit default case');
-      // return state
+        item: action.payload,
+      };
+    case HANDLE_SEARCH:
       return {
-        ...state
-      }
+        ...state,
+        searchInput: action.payload,
+      };
+    case HANDLE_SEARCHED_POSTS:
+      return {
+        ...state,
+        searchedPosts: action.payload,
+      };
+    case COMMENT_HANDLER:
+      return {
+        ...state,
+        commentInput: action.payload,
+      };
+    case HANDLE_LOGGED_USER:
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case HANDLE_FOLLOW_SWITCH:
+      return {
+        ...state,
+        showFollowers: !state.showFollowers,
+      };
+    case HANDLE_SHOW_FOLLOWERS:
+      return {
+        ...state,
+        friendsDisplay: "followers",
+      };
+    case HANDLE_SHOW_FOLLOWED:
+      return {
+        ...state,
+        friendsDisplay: "followed",
+      };
+    case HANDLE_FOLLOW_ACTION:
+      return {
+        ...state,
+        user: action.payload,
+      };
+    case HANDLE_UNFOLLOW_ACTION:
+      return {
+        ...state,
+        user: action.payload,
+      };
+    default:
+      return {
+        ...state,
+      };
   }
-}
+};

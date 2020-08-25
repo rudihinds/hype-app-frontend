@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   ScrollView,
@@ -9,171 +9,212 @@ import {
   Button,
   TouchableOpacity,
   Dimensions,
-  KeyboardAvoidingView
-} from 'react-native';
+  KeyboardAvoidingView,
+} from "react-native";
 import Tags from "react-native-tags";
-import { Icon } from 'react-native-elements';
-import TagInput from 'react-native-tags-input';
-import LocationPicker from '../components/LocationPicker'
-import * as VideoThumbnails from 'expo-video-thumbnails'
-import Colors from '../constants/Colors'
-import { HeaderButtons, Item } from 'react-navigation-header-buttons'
-import API from '../adapters/API';
+import { Icon } from "react-native-elements";
+import TagInput from "react-native-tags-input";
+import LocationPicker from "../components/LocationPicker";
+import * as VideoThumbnails from "expo-video-thumbnails";
+import Colors from "../constants/Colors";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import API from "../adapters/API";
+import AWS from "aws-sdk/dist/aws-sdk-react-native";
+const s3 = new AWS.S3({
+  accessKeyId: "AKIAJ7KVPF7OURYEXPIA",
+  secretAccessKey: "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",
+});
 
-const mainColor = '#3ca897';
+// s3.listBuckets(function(err, data) {
+//   if (err) {
+//     console.log("Error", err);
+//   } else {
+//     console.log("Success", data.Buckets);
+//   }
+// });
 
+const mainColor = "#3ca897";
 
 export default class SubmitPostScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: 'yolo',
-      caption: 'yolo2',
+      title: "yolo",
+      caption: "yolo2",
       latitude: null,
       longitude: null,
       tags: {
-        tag: '',
-        tagsArray: ['blood', 'floods', 'your', 'dungarees']
+        tag: "",
+        tagsArray: ["blood", "floods", "your", "dungarees"],
       },
       captures: {},
       preview: null,
       userId: 1,
-      uri: ''
+      uri: "",
     };
   }
 
   static navigationOptions = ({ navigation }) => {
-    const post = (navigation.getParam('state')) ? navigation.getParam('state') : {}
-    const postFilled = obj => Object.values(obj).every(val => val !== "")
-    const submitPost = navigation.getParam('submitHandler')
+    const post = navigation.getParam("state")
+      ? navigation.getParam("state")
+      : {};
+    const postFilled = (obj) => Object.values(obj).every((val) => val !== "");
+    const submitPost = navigation.getParam("submitHandler");
     return {
       headerRight: () => (
         <HeaderButtons>
-          {postFilled(post) &&
+          {postFilled(post) && (
             <Item
-              title='Post'
+              title="Post"
               onPress={() => submitPost(post)}
               color={Colors.primary}
             />
-          }
+          )}
         </HeaderButtons>
       ),
       headerLeft: () => (
         <HeaderButtons>
           <Item
-            title='Back'
+            title="Back"
             onPress={() => navigation.goBack()}
             color={Colors.primary}
           />
         </HeaderButtons>
       ),
       headerStyle: {
-        backgroundColor: Colors.tertiary
+        backgroundColor: Colors.tertiary,
       },
-      headerTintColor: 'white'
-    }
-  }
+      headerTintColor: "white",
+    };
+  };
 
   componentDidMount = () => {
-    const { captures } = this.props.navigation.state.params
-
+    const { captures } = this.props.navigation.state.params;
+    console.log(captures.photoData);
     if (captures.photoData) {
-      this.setState({ uri: captures.photoData.uri })
+      this.setState({ uri: captures.photoData.uri });
     } else {
-      this.setState({ uri: captures.videoData.uri })
+      this.setState({ uri: captures.videoData.uri });
     }
 
-    this.setState({ captures })
+    this.setState({ captures });
 
     if (captures.type === "photo") {
-      this.setState({ preview: captures.photoData })
+      this.setState({ preview: captures.photoData });
     } else {
-      this.generateThumbnail(captures.videoData.uri)
+      this.generateThumbnail(captures.videoData.uri);
     }
   };
 
   componentDidUpdate = (prevProps, prevState) => {
     if (prevState !== this.state) {
       // console.log(this.state)
-      this.props.navigation.setParams({ state: this.state, submitHandler: this.submitHandler })
-
+      this.props.navigation.setParams({
+        state: this.state,
+        submitHandler: this.submitHandler,
+      });
     }
-  }
+  };
 
   generateThumbnail = async (uri) => {
     try {
-      const preview = await VideoThumbnails.getThumbnailAsync(
-        uri,
-        { time: 1500 }
-      )
-      this.setState({ preview })
+      const preview = await VideoThumbnails.getThumbnailAsync(uri, {
+        time: 1500,
+      });
+      this.setState({ preview });
     } catch (e) {
-      console.log('error: ', e)
+      console.log("error: ", e);
     }
-  }
-
+  };
 
   updateTagState = (state) => {
     this.setState({
-      tags: state
-    })
+      tags: state,
+    });
   };
 
   handleTitleChange = (value) => {
-    this.setState({ title: value })
-  }
+    this.setState({ title: value });
+  };
 
   handleTagsChange = (value) => {
-    this.setState({ tags: value })
-  }
+    this.setState({ tags: value });
+  };
 
   handleCaptionChange = (value) => {
-    this.setState({ caption: value })
-  }
+    this.setState({ caption: value });
+  };
 
-  submitHandler = (post) => {
-    let newPost = new FormData()
-    let headers = new Headers()
-    headers.append('Accept', 'application/json')
+  submitHandler = async (post) => {
+    console.log(post);
+    // let uri = post.uri.replace("file://", "");
+    // let type = post.uri.split(".").pop();
+    // const params = {
+    //   Bucket: "roris-test-bucket",
+    //   Key: `bill.png`,
+    //   Body:
+    //     "https://pmcdeadline2.files.wordpress.com/2018/02/bill-gates-2.jpg?w=681&h=383&crop=1g",
+    // };
+    // await s3.upload(params, async function(err, data) {
+    //   if (err) {
+    //     throw err;
+    //   }
+    //   console.log(data);
+    //   // await createPost(data);
+    // });
+    // let newPost = new FormData();
+    // let headers = new Headers();
+    // headers.append("Accept", "application/json");
     // let uri = post.uri.replace("file://", "")
-    let type = post.uri.split('.').pop()
-
-    newPost.append('image', {
-      uri: post.uri,
-      name: post.title,
-      type: `image/${type}`
-    })
-
-    newPost.append('title', post.title)
-    newPost.append('description', post.caption)
-    newPost.append('tags', JSON.stringify(post.tags.tagsArray))
-    newPost.append('longitude', post.longitude)
-    newPost.append('latitude', post.latitude)
-    newPost.append('user_id', post.userId)
-
-    let req = new Request('http://localhost:3000/posts', {
-      method: 'POST',
-      body: newPost,
-      headers
-    })
-
-    fetch(req).then(res => res.json()).then(console.log)
-  }
+    // let type = post.uri.split(".").pop();
+    // newPost.append("image", {
+    //   uri: post.uri,
+    //   name: post.title,
+    //   type: `image/${type}`,
+    // });
+    // newPost.append("title", post.title);
+    // newPost.append("description", post.caption);
+    // newPost.append("tags", JSON.stringify(post.tags.tagsArray));
+    // newPost.append("longitude", post.longitude);
+    // newPost.append("latitude", post.latitude);
+    // newPost.append("user_id", post.userId);
+    // let req = new Request("http://localhost:3000/posts", {
+    //   method: "POST",
+    //   body: newPost,
+    //   headers,
+    // });
+    // fetch(req)
+    //   .then((res) => res.json())
+    //   .then(console.log);
+  };
 
   grabCoords = (location) => {
-    this.setState({ latitude: location.lat, longitude: location.lng })
-  }
-
+    this.setState({ latitude: location.lat, longitude: location.lng });
+  };
 
   render() {
     // console.log(this.state)
-    const { title, tags, caption, location, preview } = this.state
+    const { title, tags, caption, location, preview } = this.state;
 
     return (
       <ScrollView>
         <View style={styles.form}>
-          <View style={[styles.formControl, styles.input, { flexDirection: 'row', flex: 6 }]} onSubmit={() => this.submitHandler()}>
-            {preview && <View style={{ flex: 1 }}><Image style={{ height: 65, width: 65 }} source={{ uri: preview.uri }} /></View>}
+          <View
+            style={[
+              styles.formControl,
+              styles.input,
+              { flexDirection: "row", flex: 6 },
+            ]}
+            onSubmit={() => this.submitHandler()}
+          >
+            {preview && (
+              <View style={{ flex: 1 }}>
+                <Image
+                  style={{ height: 65, width: 65 }}
+                  source={{ uri: preview.uri }}
+                />
+              </View>
+            )}
             <View style={{ flex: 4 }}>
               <Text style={styles.label}>Title</Text>
               <TextInput
@@ -184,9 +225,9 @@ export default class SubmitPostScreen extends Component {
                 autoCapitalize="sentences"
                 autoCorrect
                 returnKeyType="next"
-                onEndEditing={() => console.log('onEndEditing')}
-                onSubmitEditing={() => console.log('onSubmitEditing')}
-                required='true'
+                onEndEditing={() => console.log("onEndEditing")}
+                onSubmitEditing={() => console.log("onSubmitEditing")}
+                required="true"
               />
             </View>
             {/* {!formState.inputValidities.title && <Text>Please enter a valid title!</Text>} */}
@@ -201,8 +242,7 @@ export default class SubmitPostScreen extends Component {
               autoCapitalize="sentences"
               autoCorrect
               returnKeyType="next"
-              required='true'
-
+              required="true"
             />
           </View>
           <View style={styles.formControl}>
@@ -219,7 +259,6 @@ export default class SubmitPostScreen extends Component {
             <LocationPicker grabCoords={this.grabCoords} />
           </View>
         </View>
-
       </ScrollView>
     );
   }
@@ -227,47 +266,46 @@ export default class SubmitPostScreen extends Component {
 
 const styles = StyleSheet.create({
   form: {
-    margin: 20
+    margin: 20,
   },
   formControl: {
-    width: '100%'
+    width: "100%",
   },
   label: {
     // fontFamily: 'open-sans-bold',
     marginVertical: 8,
-    color: 'grey',
+    color: "grey",
     // textDecorationStyle: 'double'
   },
   input: {
     paddingHorizontal: 2,
     paddingVertical: 5,
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
     borderBottomWidth: 1,
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   textInput: {
     height: 40,
-    borderColor: 'white',
+    borderColor: "white",
     borderWidth: 1,
     marginTop: 8,
     borderRadius: 5,
     padding: 3,
   },
   tag: {
-    backgroundColor: '#fff'
+    backgroundColor: "#fff",
   },
   tagText: {
-    color: mainColor
+    color: mainColor,
   },
-
 });
 
-
-{/* <View style={styles.container}>
+{
+  /* <View style={styles.container}>
               <TagInput
                 updateState={this.updateTagState}
                 tags={this.state.tags}
@@ -285,4 +323,5 @@ const styles = StyleSheet.create({
                 tagStyle={styles.tag}
                 tagTextStyle={styles.tagText}
                 keysForTag={', '} />
-            </View> */}
+            </View> */
+}

@@ -1,40 +1,52 @@
-import React, { Component } from 'react';
-import { View, Text, TextInput } from 'react-native';
-import { Button } from 'react-native-elements'
-import API from '../adapters/API'
+import React, { Component } from "react";
+import { View, Text, TextInput } from "react-native";
+import { Button } from "react-native-elements";
+import API from "../adapters/API";
+import { useDispatch, useSelector } from "react-redux";
+import { commentHandler } from "../actions/postActions";
 
-
-
-const CommentInput = props => {
-
-  const [value, setChangeText] = React.useState('');
-  const [newComment, setNewComment] = React.useState('')
-  const addComment = (comment) => {
-    API.addNewComment(comment, props.id)
-    setNewComment('')
-  }
-
-  const handleChangeText = text => {
-    setChangeText(text)
-  }
+const CommentInput = (props) => {
+  console.log(props);
+  const dispatch = useDispatch();
+  const commentInput = useSelector((state) => state.posts.commentInput);
+  const addComment = async () => {
+    const comment = await API.addNewComment(commentInput, props.post.post._id);
+    console.log(comment);
+  };
 
   return (
-    <View style={{ margin: 7, flexDirection: 'row', justifyContent: 'space-between' }}>
+    <View
+      style={{
+        margin: 7,
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
       <TextInput
-        style={{ borderRadius: 25, margin: 5, flex: 5, width: 140, height: 40, borderColor: 'gray', borderWidth: 1 }}
-        onChangeText={text => handleChangeText(text)}
-        value={value}
-        placeholder={'    Add a comment...'}
+        style={{
+          borderRadius: 25,
+          margin: 5,
+          flex: 5,
+          width: 140,
+          height: 40,
+          borderColor: "gray",
+          borderWidth: 1,
+        }}
+        onChangeText={(text) => dispatch(commentHandler(text))}
+        placeholder={"    Add a comment..."}
       ></TextInput>
 
       <View style={{ margin: 5, flex: 1 }}>
-        <Button buttonStyle={{ backgroundColor: '#282B2F' }} title={"post"} onPress={() => {
-          if (value !== '')
-            addComment(value)
-        }} />
+        <Button
+          buttonStyle={{ backgroundColor: "#282B2F" }}
+          title={"post"}
+          onPress={() => {
+            if (commentInput !== "") addComment();
+          }}
+        />
       </View>
     </View>
   );
-}
+};
 
-export default CommentInput
+export default CommentInput;

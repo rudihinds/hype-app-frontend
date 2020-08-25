@@ -1,4 +1,5 @@
-import React, { Component, useEffect } from "react";
+import React, { Component, useEffect, useState } from "react";
+import Colors from "../constants/Colors";
 import {
   View,
   Text,
@@ -15,12 +16,9 @@ import {
   Button,
   ThemeProvider,
 } from "react-native-elements";
-import Colors from "../constants/Colors";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import UserInfoButton from "../components/UserInfoButton";
-import PostsLists from "../components/PostsList";
 import { FlatList } from "react-native-gesture-handler";
-import { throwIfAudioIsDisabled } from "expo-av/build/Audio/AudioAvailability";
+import API from "../adapters/API";
 import { useSelector, useDispatch } from "react-redux";
 import {
   showFollowers,
@@ -29,30 +27,25 @@ import {
   follow,
   unFollow,
 } from "../actions/postActions";
-import API from "../adapters/API";
 
-export default function FindFriendsScreen({ navigation }) {
-  const followed = useSelector((state) => state.posts.user.followed);
-  const followers = useSelector((state) => state.posts.user.followers);
+export default function userScreen({ navigation }) {
+  console.log(navigation.getParam("followers"));
+  console.log("hello");
   const user = useSelector((state) => state.posts.user);
   const friendsDisplay = useSelector((state) => state.posts.friendsDisplay);
   const dispatch = useDispatch();
+
+  const [tab, setTab] = useState("followers");
+
   useEffect(() => {
     console.log("use effect worked in findfriendsscreen");
     console.log(user);
   });
 
-  const checkEnter = (e) => {
-    const { text } = e.nativeEvent;
-    console.log(text);
-  };
-
   const handleShowUser = async (user) => {
-    // console.log("Showing User");
-    // console.log(user);
     // dispatch(showUser(user));
     const theUser = await API.getOneUser(user);
-    navigation.navigate("UserScreen", theUser);
+    navigation.push("UserScreen", theUser);
   };
 
   const handleFollowButtonClick = async (id) => {
@@ -73,27 +66,27 @@ export default function FindFriendsScreen({ navigation }) {
 
   const showFollowersFunction = () => {
     console.log("hello");
-    dispatch(showFollowers());
+    setTab("followers");
   };
 
   const showFollowedFunction = () => {
     console.log("ola");
-    dispatch(showFollowed());
-  };
-
-  const switchStatement = () => {
-    switch (friendsDisplay) {
-      case "followers":
-        return followers;
-      case "followed":
-        return followed;
-    }
+    setTab("followed");
   };
 
   const showUsersPost = async () => {
-    const posts = await API.getUsersPosts(user._id);
+    const posts = await API.getUsersPosts(navigation.getParam("_id"));
     await dispatch(searchResultsHandler(posts));
     await navigation.navigate("SearchResultsScreen");
+  };
+
+  const switchStatement = () => {
+    switch (tab) {
+      case "followers":
+        return navigation.getParam("followers");
+      case "followed":
+        return navigation.getParam("followed");
+    }
   };
 
   const followedOrNot = (item) => {
@@ -121,37 +114,32 @@ export default function FindFriendsScreen({ navigation }) {
     <View style={styles.window}>
       <View style={styles.infoBar}>
         <View style={styles.avatar}>
-          <Avatar source={{ uri: user.img }} rounded size="large" />
+          <Avatar
+            source={{ uri: navigation.getParam("img") }}
+            rounded
+            size="large"
+          />
         </View>
         <View style={styles.followButtons}>
           <UserInfoButton
             style={styles.followersButton}
             title={"Followers"}
-            quantity={followers.length}
+            quantity={navigation.getParam("followers").length}
             handleClick={showFollowersFunction}
           />
           <UserInfoButton
             style={styles.followingButton}
             title={"Following"}
-            quantity={followed.length}
+            quantity={navigation.getParam("followed").length}
             handleClick={showFollowedFunction}
           />
           <UserInfoButton
             style={styles.myPostsButton}
             title={"Posts"}
-            quantity={followers.length}
+            quantity={navigation.getParam("followers").length}
             handleClick={showUsersPost}
           />
         </View>
-      </View>
-      <View>
-        <TextInput
-          placeholder="   enter a username"
-          onSubmitEditing={checkEnter}
-          // onChangeText={handleChangeText}
-          style={styles.inputBar}
-          returnKeyType="search"
-        />
       </View>
       <View>
         <FlatList

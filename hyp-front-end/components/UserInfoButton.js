@@ -1,37 +1,32 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { ListItem, Card, Icon, Avatar, ButtonGroup, Button } from 'react-native-elements'
+import React, { Component } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { swithFollowers } from "../actions/postActions";
 
+export default function UserInfoButton(props) {
+  const dispatch = useDispatch();
+  const followed = useSelector((state) => state.posts.user.followed);
+  const followers = useSelector((state) => state.posts.user.followers);
 
-export default class UserInfoButton extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: props.title,
-      quantity: props.quantity
-    };
-  }
+  // const handleClick = () => {
+  //   // console.log("followers was pressed");
+  //   // dispatch(swithFollowers());
+  //   props.howFollowersFunction();
+  // };
 
-  handleClick = (e) => {
-    //need to get the string which is title sent back to the page to use as static navigation options to render different lists
-    //or, if we are on the Users Posts Show page, we can use it to make some logic which will take us to a different screen 
-    //it is in props and state anyway.
-    this.props.getSelectedList(this.state.title)
-  }
-
-  render() {
-    const { title, quantity } = this.state
-    return (
-      <TouchableOpacity style={styles.followersButton} onPress={this.handleClick}>
-        <View style={styles.followText}>
-          <Text style={styles.followText}>{title}</Text>
-        </View>
-        <View style={styles.followNumbers}>
-          <Text style={styles.followNumbers}>{quantity}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
+  return (
+    <TouchableOpacity
+      style={styles.followersButton}
+      onPress={props.handleClick}
+    >
+      <View style={styles.followText}>
+        <Text style={styles.followText}>{props.title}</Text>
+      </View>
+      <View style={styles.followNumbers}>
+        <Text style={styles.followNumbers}>{props.quantity}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -39,20 +34,20 @@ const styles = StyleSheet.create({
     // flexDirection: 'column',
     // width: 10,
     flex: 9,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     // margin: 2,
     // marginTop: 7,
     // borderStyle: 'solid',
     // borderColor: 'orange',
   },
   followText: {
-    alignItems: 'center',
-    fontWeight: '300'
+    alignItems: "center",
+    fontWeight: "300",
   },
   followNumbers: {
-    alignItems: 'center',
-    fontWeight: '600'
+    alignItems: "center",
+    fontWeight: "600",
   },
   followersButton: {
     flex: 3,
@@ -62,4 +57,4 @@ const styles = StyleSheet.create({
     // borderWidth: 5,
     // borderRadius: 5,
   },
-})
+});
