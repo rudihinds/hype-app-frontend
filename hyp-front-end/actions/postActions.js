@@ -3,18 +3,14 @@ import {
   FETCH_ALL_POSTS,
   NEW_POST,
   HANDLE_SEARCH,
-  HANDLE_COMMENT,
+  HANDLE_GEO_SEARCH,
+  COMMENT_HANDLER,
   HANDLE_SEARCHED_POSTS,
-  HANDLE_LOGGED_USER,
-  HANDLE_SHOW_FOLLOWERS,
-  HANDLE_SHOW_FOLLOWED,
-  HANDLE_FOLLOW_ACTION,
-  HANDLE_UNFOLLOW_ACTION,
+  HANDLE_CHOSEN_POST,
 } from "./types";
 
 export const getAllPosts = () => async (dispatch) => {
   console.log("get all posts action hit");
-
   const allPosts = await API.getAllPosts();
   dispatch({ type: FETCH_ALL_POSTS, payload: allPosts });
 };
@@ -33,6 +29,7 @@ export const createPost = (post) => (dispatch) => {
   //   payload: post
   // }))
 };
+
 export const searchHandler = (input) => {
   return {
     type: HANDLE_SEARCH,
@@ -40,9 +37,17 @@ export const searchHandler = (input) => {
   };
 };
 
-export const commentHandler = (input) => {
+export const geoSearchHandler = (input) => {
   return {
-    type: HANDLE_COMMENT,
+    type: HANDLE_GEO_SEARCH,
+    payload: input,
+  };
+};
+
+export const commentHandler = (input) => {
+  console.log(input);
+  return {
+    type: COMMENT_HANDLER,
     payload: input,
   };
 };
@@ -54,48 +59,9 @@ export const searchResultsHandler = (posts) => {
   };
 };
 
-export const saveUser = (user) => {
+export const storePost = (post) => {
   return {
-    type: HANDLE_LOGGED_USER,
-    payload: user,
+    type: HANDLE_CHOSEN_POST,
+    payload: post,
   };
 };
-
-export const showFollowers = () => {
-  return {
-    type: HANDLE_SHOW_FOLLOWERS,
-  };
-};
-
-export const showFollowed = () => {
-  return {
-    type: HANDLE_SHOW_FOLLOWED,
-  };
-};
-
-export const addFollowers = (user) => {
-  return {
-    type: HANDLE_FOLLOW_ACTION,
-    payload: user,
-  };
-};
-
-export const unFollow = (user) => {
-  return {
-    type: HANDLE_UNFOLLOW_ACTION,
-    payload: user,
-  };
-};
-
-export const follow = (user) => {
-  return {
-    type: HANDLE_FOLLOW_ACTION,
-    payload: user,
-  };
-};
-
-// export const swithFollowers = () => {
-//   return {
-//     type: HANDLE_FOLLOW_SWITCH,
-//   };
-// };

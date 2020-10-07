@@ -1,56 +1,27 @@
-import React, { Component, useEffect } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import {
-  ListItem,
-  Card,
-  Icon,
-  Avatar,
-  ButtonGroup,
-  Button,
-  ThemeProvider,
-} from "react-native-elements";
+import React from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { ListItem, Avatar, Button } from "react-native-elements";
 import Colors from "../constants/Colors";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import UserInfoButton from "../components/UserInfoButton";
-import PostsLists from "../components/PostsList";
 import { FlatList } from "react-native-gesture-handler";
-import { throwIfAudioIsDisabled } from "expo-av/build/Audio/AudioAvailability";
 import { useSelector, useDispatch } from "react-redux";
+import { searchResultsHandler } from "../actions/postActions";
 import {
-  showFollowers,
-  showFollowed,
-  searchResultsHandler,
   follow,
   unFollow,
-} from "../actions/postActions";
+  showFollowers,
+  showFollowed,
+} from "../actions/userActions";
 import API from "../adapters/API";
 
 export default function FindFriendsScreen({ navigation }) {
-  const followed = useSelector((state) => state.posts.user.followed);
-  const followers = useSelector((state) => state.posts.user.followers);
-  const user = useSelector((state) => state.posts.user);
-  const friendsDisplay = useSelector((state) => state.posts.friendsDisplay);
+  const followed = useSelector((state) => state.user.user.followed);
+  const followers = useSelector((state) => state.user.user.followers);
+  const user = useSelector((state) => state.user.user);
+  const friendsDisplay = useSelector((state) => state.user.friendsDisplay);
   const dispatch = useDispatch();
-  useEffect(() => {
-    console.log("use effect worked in findfriendsscreen");
-    console.log(user);
-  });
-
-  const checkEnter = (e) => {
-    const { text } = e.nativeEvent;
-    console.log(text);
-  };
 
   const handleShowUser = async (user) => {
-    // console.log("Showing User");
-    // console.log(user);
-    // dispatch(showUser(user));
     const theUser = await API.getOneUser(user);
     navigation.navigate("UserScreen", theUser);
   };
@@ -58,26 +29,18 @@ export default function FindFriendsScreen({ navigation }) {
   const handleFollowButtonClick = async (id) => {
     const followUser = await API.followUser(user._id, id);
     dispatch(follow(followUser));
-    // await console.log(followUser);
   };
 
   const handleUnfollowButtonClick = async (id) => {
     const newUser = await API.unFollowUser(user._id, id);
-    // console.log(unFollowUser);
     dispatch(unFollow(newUser));
-    // if (unFollowUser.message === "ok") {
-    //   dispatch(addFollowers(id));
-    // }
-    // await console.log(unFollowUser);
   };
 
   const showFollowersFunction = () => {
-    console.log("hello");
     dispatch(showFollowers());
   };
 
   const showFollowedFunction = () => {
-    console.log("ola");
     dispatch(showFollowed());
   };
 
@@ -92,12 +55,11 @@ export default function FindFriendsScreen({ navigation }) {
 
   const showUsersPost = async () => {
     const posts = await API.getUsersPosts(user._id);
-    await dispatch(searchResultsHandler(posts));
-    await navigation.navigate("SearchResultsScreen");
+    dispatch(searchResultsHandler(posts));
+    navigation.navigate("SearchResultsScreen");
   };
 
   const followedOrNot = (item) => {
-    console.log(item.followers);
     if (item.followers.includes(user._id)) {
       return (
         <Button
@@ -118,8 +80,8 @@ export default function FindFriendsScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.window}>
-      <View style={styles.infoBar}>
+    <View style={styles.conatainer}>
+      <View style={styles.infoBarContainer}>
         <View style={styles.avatar}>
           <Avatar source={{ uri: user.img }} rounded size="large" />
         </View>
@@ -144,16 +106,14 @@ export default function FindFriendsScreen({ navigation }) {
           />
         </View>
       </View>
-      <View>
-        <TextInput
-          placeholder="   enter a username"
-          onSubmitEditing={checkEnter}
-          // onChangeText={handleChangeText}
-          style={styles.inputBar}
-          returnKeyType="search"
+      <View style={styles.FindFriendsButtonContaner}>
+        <Button
+          title="Find Friends"
+          onPress={() => navigation.navigate("FriendSearchScreen")}
+          buttonStyle={styles.FindFriendsButton}
         />
       </View>
-      <View>
+      <View style={styles.usersContainer}>
         <FlatList
           keyExtractor={(item) => item._id}
           data={switchStatement()}
@@ -163,16 +123,7 @@ export default function FindFriendsScreen({ navigation }) {
                 leftAvatar={{ source: { uri: item.img } }}
                 bottomDivider
                 title={item.name}
-                // subtitle={item.firstName + " " + item.lastName}
-                // subtitleStyle={{ color: Colors.tertiary }}
-                rightElement={
-                  followedOrNot(item)
-                  // <Button
-                  //   title="follow"
-                  //   buttonStyle={styles.button}
-                  //   onPress={() => this.handleFollowButtonClick(item)}
-                  // />
-                }
+                rightElement={followedOrNot(item)}
               />
             </TouchableOpacity>
           )}
@@ -183,86 +134,40 @@ export default function FindFriendsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  infoBar: {
+  conatainer: {
+    flex: 1,
+  },
+  infoBarContainer: {
     flexDirection: "row",
-    // borderStyle: 'solid',
-    // borderColor: 'blue',
-    // borderWidth: 5,
     justifyContent: "space-between",
     margin: 3,
     marginTop: 7,
-    // paddingTop: 7,
-    // paddingLeft: 7
+  },
+  FindFriendsButtonContaner: {
+    marginTop: 5,
+    marginBottom: 5,
+    alignItems: "center",
+  },
+  usersContainer: {
+    flex: 1,
   },
   followButtons: {
-    // flexDirection: 'column',
-    // width: 10,
     flex: 9,
     flexDirection: "row",
-    // margin: 2,
-    // marginTop: 7,
-    // borderStyle: 'solid',
-    // borderColor: 'orange',
     alignItems: "center",
-  },
-  followText: {
-    alignItems: "center",
-    fontWeight: "300",
-  },
-  followNumbers: {
-    alignItems: "center",
-    fontWeight: "600",
-  },
-  inputBar: {
-    // alignItems: 'flex-end'
-    height: 40,
-    borderStyle: "solid",
-    borderColor: "darkgrey",
-    borderWidth: 0.25,
-    borderRadius: 10,
-    backgroundColor: "lightgrey",
-    marginTop: 1,
-    marginBottom: 2,
-    marginLeft: 5,
-    marginRight: 5,
-  },
-  window: {
-    display: "flex",
-  },
-  followersButton: {
-    flex: 3,
-    // margin: 7,
-    // borderStyle: 'solid',
-    // borderColor: 'red',
-    // borderWidth: 5,
-    // borderRadius: 5,
   },
   followingButton: {
     flex: 3,
-    // margin: 7,
-    // borderStyle: 'solid',
-    // borderColor: 'red',
-    // borderWidth: 5,
-    // borderRadius: 5,
   },
   myPostsButton: {
     flex: 3,
-    // margin: 7,
-    // borderStyle: 'solid',
-    // borderColor: 'red',
-    // borderWidth: 5,
-    // borderRadius: 5,
-  },
-  myPostsNumbers: {
-    alignItems: "center",
-    borderStyle: "solid",
-    borderColor: "red",
-    borderWidth: 5,
-    borderRadius: 5,
   },
   avatar: {
     justifyContent: "center",
     marginLeft: 5,
+  },
+  FindFriendsButton: {
+    width: 400,
   },
   button: {
     width: 110,

@@ -1,19 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { swithFollowers } from "../actions/postActions";
 
 export default function UserInfoButton(props) {
-  const dispatch = useDispatch();
-  const followed = useSelector((state) => state.posts.user.followed);
-  const followers = useSelector((state) => state.posts.user.followers);
-
-  // const handleClick = () => {
-  //   // console.log("followers was pressed");
-  //   // dispatch(swithFollowers());
-  //   props.howFollowersFunction();
-  // };
-
   return (
     <TouchableOpacity
       style={styles.followersButton}
@@ -30,17 +18,6 @@ export default function UserInfoButton(props) {
 }
 
 const styles = StyleSheet.create({
-  followButtons: {
-    // flexDirection: 'column',
-    // width: 10,
-    flex: 9,
-    flexDirection: "row",
-    alignItems: "center",
-    // margin: 2,
-    // marginTop: 7,
-    // borderStyle: 'solid',
-    // borderColor: 'orange',
-  },
   followText: {
     alignItems: "center",
     fontWeight: "300",
@@ -51,10 +28,5 @@ const styles = StyleSheet.create({
   },
   followersButton: {
     flex: 3,
-    // margin: 7,
-    // borderStyle: 'solid',
-    // borderColor: 'red',
-    // borderWidth: 5,
-    // borderRadius: 5,
   },
 });

@@ -1,22 +1,16 @@
-// src/camera.page.js file
 import React from "react";
 import { View, Text } from "react-native";
 import { Camera } from "expo-camera";
 import * as Permissions from "expo-permissions";
 import { StyleSheet, Dimensions, Image, Button } from "react-native";
 import Toolbar from "../components/toolbar.component";
-import Gallery from "../components/gallery.component";
 import { Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
-import ImageStillScreen from "../screens/ImageStillScreen";
-import * as VideoThumbnails from "expo-video-thumbnails";
+import ImageStillScreen from "./ImageStillScreen";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import Colors from "../constants/Colors";
-// import { Header } from 'react-native/Libraries/NewAppScreen'
 
 const { width: winWidth, height: winHeight } = Dimensions.get("window");
-
-// import styles from './styles';
 
 export default class VideoScreen extends React.Component {
   camera = null;
@@ -59,7 +53,6 @@ export default class VideoScreen extends React.Component {
   };
 
   async componentDidMount() {
-    console.log(this.state);
     const camera = await Permissions.askAsync(Permissions.CAMERA);
     const audio = await Permissions.askAsync(Permissions.AUDIO_RECORDING);
     const hasCameraPermission =
@@ -70,10 +63,6 @@ export default class VideoScreen extends React.Component {
       goToSubmitPostScreen: this._goToSubmitPostScreen,
       captures: this.state.captures,
     });
-  }
-
-  componentWillUnmount() {
-    console.log(this.state);
   }
 
   setFlashMode = (flashMode) => this.setState({ flashMode });
@@ -113,7 +102,6 @@ export default class VideoScreen extends React.Component {
       capturing,
       captures,
     } = this.state;
-    // console.log(captures);
 
     if (hasCameraPermission === null) {
       return <View />;
@@ -136,7 +124,6 @@ export default class VideoScreen extends React.Component {
           //and one on image view screen
           //long fix: need MediaReviewScreen which contains either the video player or image still screen data to put in
           //navigation stack so BACK button can go back to this media capture screen (VideoScreen)
-
           <VideoPlayer
             videoProps={{
               shouldPlay: true,
@@ -171,30 +158,6 @@ export default class VideoScreen extends React.Component {
     );
   }
 }
-
-// VideoScreen.navigationOptions = navigationData => {
-
-//   console.log(navigationData.navigation)
-//   return {
-//     headerTitle: "New Post",
-//     headerRight: (
-//       <HeaderButtons>
-//         <Item
-//           title='Next'
-//         // onPress={}
-//         />
-//       </HeaderButtons>
-//     ),
-//     headerLeft: (
-//       <HeaderButtons>
-//         <Item
-//           title='Back'
-//           onPress={() => navigationData.navigation.goBack()}
-//         />
-//       </HeaderButtons>
-//     )
-//   }
-// }
 
 const styles = StyleSheet.create({
   preview: {

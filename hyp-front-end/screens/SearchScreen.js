@@ -1,16 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Button, TextInput, Text } from "react-native";
-import { Button as IconButton } from "react-native-elements";
+import { Button as IconButton, ButtonGroup } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Colors from "../constants/Colors";
-import { searchHandler } from "../actions/postActions";
 import { useDispatch, useSelector } from "react-redux";
 import API from "../adapters/API";
-import { saveUser, searchResultsHandler } from "../actions/postActions";
+import { saveUser } from "../actions/userActions";
+import Search from "../components/Search";
+import GeoSearch from "../components/GeoSearch";
 
 export default function SearchScreen(props) {
   const dispatch = useDispatch();
   const searchInput = useSelector((state) => state.posts.searchInput);
+  const [selectedSearch, setSelectedSearch] = useState(0);
+  const buttons = ["General Search", "Geo Search"];
   useEffect(() => {
     const getLoggedUser = async () => {
       const user = await API.getCurrentUser(searchInput);
@@ -23,60 +26,66 @@ export default function SearchScreen(props) {
     props.navigation.navigate("VideoScreen");
   };
 
-  const goToResulstsScreen = async (input) => {
-    const posts = await API.getPostSearchResults(searchInput);
-    await dispatch(searchResultsHandler(posts));
-    await props.navigation.navigate("SearchResultsScreen");
-  };
-
   const switchToUser = () => {
     props.navigation.navigate("FindFriendsScreen");
   };
 
+  const updateIndex = (selectedIndex) => {
+    setSelectedSearch(selectedIndex);
+  };
+
+  const searchDisplay = () => {
+    if (selectedSearch === 0) {
+      return <Search navigation={props.navigation} />;
+    }
+    if (selectedSearch === 1) {
+      return <GeoSearch />;
+    }
+  };
+
   return (
-    <View style={{ flex: 1 }}>
-      <View style={styles.cameraButton}>
-        <IconButton
-          icon={<Icon name="camera" size={33} color={Colors.primary} />}
-          type="clear"
-          onPress={startCamera}
+    <View style={styles.container}>
+      <View style={styles.iconsContainer}>
+        <View style={styles.iconRow}>
+          <IconButton
+            icon={<Icon name="camera" size={33} color={Colors.primary} />}
+            type="clear"
+            onPress={startCamera}
+          />
+          <IconButton
+            icon={<Icon name="heart" size={33} color={Colors.primary} />}
+            type="clear"
+            onPress={switchToUser}
+          />
+        </View>
+      </View>
+      <View style={styles.searchOptions}>
+        <ButtonGroup
+          onPress={updateIndex}
+          selectedIndex={selectedSearch}
+          buttons={buttons}
+          containerStyle={{ height: 30, width: 300 }}
         />
       </View>
-      <View style={styles.friendsButton}>
-        <IconButton
-          icon={<Icon name="heart" size={33} color={Colors.primary} />}
-          type="clear"
-          onPress={switchToUser}
-        />
-      </View>
-      <View style={styles.screen}>
-        <TextInput
-          style={{ height: 40, borderColor: "gray", borderWidth: 1 }}
-          onChangeText={(text) => dispatch(searchHandler(text))}
-        />
-        <Button
-          title={"Search"}
-          onPress={() => {
-            if (searchInput !== "") goToResulstsScreen(searchInput);
-          }}
-        />
-      </View>
+      <View style={styles.searchContainer}>{searchDisplay()}</View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    padding: 100,
+  container: {
+    flex: 1,
   },
-  cameraButton: {
-    height: 200,
-    width: 77,
-    padding: 10,
+  searchContainer: {
+    flex: 1,
   },
-  friendsButton: {
-    height: 200,
-    width: 150,
-    padding: 10,
+  iconsContainer: {
+    flex: 1,
+  },
+  iconRow: {
+    flexDirection: "row",
+  },
+  searchOptions: {
+    alignItems: "center",
   },
 });

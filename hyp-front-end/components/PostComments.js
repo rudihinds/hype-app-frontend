@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
-import { FlatList, SafeAreaView } from "react-native";
-import API from "../adapters/API";
+import React from "react";
+import { FlatList, SafeAreaView, StyleSheet, View } from "react-native";
 import Comment from "../components/Comment";
 
 const PostComments = (props) => {
   const comments = props.post.post.comments;
-  console.log(comments);
   return (
-    <SafeAreaView>
+    <View style={styles.commentListContainer}>
       <FlatList
-        style={{ backgroundColor: "black" }}
+        style={styles.commentList}
         data={comments}
         keyExtractor={(comment) => comment._id}
         renderItem={({ item }) => (
@@ -21,8 +19,15 @@ const PostComments = (props) => {
           />
         )}
       />
-    </SafeAreaView>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  commentListContainer: {},
+  commentList: {
+    marginTop: 10,
+  },
+});
 
 export default PostComments;

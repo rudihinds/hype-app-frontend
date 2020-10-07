@@ -1,52 +1,71 @@
-import React, { Component } from "react";
-import { View, Text, TextInput } from "react-native";
+import React from "react";
+import { View, TextInput, StyleSheet } from "react-native";
 import { Button } from "react-native-elements";
 import API from "../adapters/API";
 import { useDispatch, useSelector } from "react-redux";
-import { commentHandler } from "../actions/postActions";
+import { commentHandler, storePost } from "../actions/postActions";
 
 const CommentInput = (props) => {
-  console.log(props);
   const dispatch = useDispatch();
   const commentInput = useSelector((state) => state.posts.commentInput);
+  const userId = useSelector((state) => state.user.user._id);
   const addComment = async () => {
-    const comment = await API.addNewComment(commentInput, props.post.post._id);
-    console.log(comment);
+    const updatedPost = await API.addNewComment(
+      commentInput,
+      props.post.post._id,
+      userId
+    );
+    dispatch(storePost(updatedPost));
   };
 
   return (
-    <View
-      style={{
-        margin: 7,
-        flexDirection: "row",
-        justifyContent: "space-between",
-      }}
-    >
-      <TextInput
-        style={{
-          borderRadius: 25,
-          margin: 5,
-          flex: 5,
-          width: 140,
-          height: 40,
-          borderColor: "gray",
-          borderWidth: 1,
-        }}
-        onChangeText={(text) => dispatch(commentHandler(text))}
-        placeholder={"    Add a comment..."}
-      ></TextInput>
-
-      <View style={{ margin: 5, flex: 1 }}>
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => dispatch(commentHandler(text))}
+          placeholder={"    Add a comment..."}
+        ></TextInput>
+      </View>
+      <View style={styles.buttonContainer}>
         <Button
-          buttonStyle={{ backgroundColor: "#282B2F" }}
+          buttonStyle={styles.button}
           title={"post"}
           onPress={() => {
             if (commentInput !== "") addComment();
+            // addComment();
           }}
         />
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    margin: 7,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  inputContainer: {
+    flex: 5,
+  },
+  input: {
+    flex: 5,
+    borderRadius: 25,
+    margin: 5,
+    width: 300,
+    height: 40,
+    borderColor: "grey",
+    borderWidth: 1,
+  },
+  buttonContainer: {
+    margin: 5,
+    flex: 1,
+  },
+  button: {
+    backgroundColor: "#282B2F",
+  },
+});
 
 export default CommentInput;

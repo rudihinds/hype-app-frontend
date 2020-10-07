@@ -1,23 +1,20 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import { Avatar } from 'react-native-elements'
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Avatar } from "react-native-elements";
 
-
-
-const PostAvatar = props => {
-
+const PostAvatar = (props) => {
   return (
-    <View style={{ flex: 1 }}>
-      <Avatar
-        rounded
-        source={{ uri: 'https://i.pravatar.cc/' }}
-        size='medium'
-      />
+    <View style={styles.avatar}>
+      <Avatar rounded source={{ uri: props.img }} size="medium" />
     </View>
   );
+};
 
-}
+const styles = StyleSheet.create({
+  avatar: {
+    marginRight: 10,
+    flex: 1,
+  },
+});
 
-export default PostAvatar
-
-
+export default PostAvatar;

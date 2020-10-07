@@ -5,24 +5,26 @@ import PostScreen from "../screens/PostScreen";
 import SearchScreen from "../screens/SearchScreen";
 import VideoScreen from "../screens/VideoScreen";
 import SubmitPostScreen from "../screens/SubmitPostScreen";
-import ImageStillScreen from "../screens/ImageStillScreen";
 import FindFriendsScreen from "../screens/FindFriendsScreen";
-import UserShowScreen from "../screens/UserShowScreen";
-import PostsWallScreen from "../screens/PostsWallScreen";
 import UserScreen from "../screens/UserScreen";
+import FriendSearchScreen from "../screens/FriendSearchScreen";
 
 const HypeAppNavigator = createStackNavigator(
   {
     SearchScreen,
     SearchResultsScreen,
-    PostsWallScreen,
     PostScreen,
     VideoScreen,
     SubmitPostScreen,
-    ImageStillScreen,
-    FindFriendsScreen,
-    UserShowScreen,
+    FindFriendsScreen: {
+      screen: FindFriendsScreen,
+      navigationOptions: {
+        title: "MyScreen",
+        // headerLeft: null,
+      },
+    },
     UserScreen,
+    FriendSearchScreen,
   },
   {
     initialRouteName: "SearchScreen",

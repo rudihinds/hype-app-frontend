@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -7,90 +7,87 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import { Button, Avatar } from "react-native-elements";
+import { Avatar } from "react-native-elements";
 import Colors from "../constants/Colors";
-import API from "../adapters/API";
 import { useSelector, useDispatch } from "react-redux";
-import { searchResultsHandler } from "../actions/postActions";
+import { storePost } from "../actions/postActions";
 
 const SearchResultsScreen = (props) => {
-  // const searchInput = useSelector((state) => state.posts.searchInput);
+  const dispatch = useDispatch();
   const searchResults = useSelector((state) => state.posts.searchedPosts);
-  // const dispatch = useDispatch();
-  console.log(props);
 
-  // useEffect(() => {
-  //   const fetchPosts = async () => {
-  //     const posts = await API.getPostSearchResults(searchInput);
-  //     dispatch(searchResultsHandler(posts));
-  //   };
-  //   fetchPosts();
-  // });
+  const choosePost = async (post) => {
+    dispatch(storePost(post));
+    props.navigation.navigate("PostScreen");
+  };
 
   return (
-    <View>
-      <FlatList
-        data={searchResults}
-        renderItem={({ item }) => (
-          <View>
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate("PostScreen", { item })}
-            >
-              <Image
-                source={{ uri: item.thumbnail }}
-                style={{
-                  width: "100%",
-                  height: 250,
-                }}
-              />
-              <View
-                style={{
-                  marginBottom: 7,
-                  marginTop: 7,
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                }}
-              >
-                <View style={{ flex: 1 }}>
-                  <Avatar rounded source={{ uri: item.user.img }} />
+    <View style={styles.container}>
+      <View style={styles.postsContainer}>
+        <FlatList
+          data={searchResults}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <View style={styles.postContainer}>
+              <TouchableOpacity onPress={() => choosePost(item)}>
+                <View style={styles.postImageContainer}>
+                  <Image
+                    source={{ uri: item.thumbnail }}
+                    style={styles.image}
+                  />
                 </View>
-                <View style={{ flex: 7 }}>
-                  <Text
-                    style={{
-                      flex: 1,
-                      flexDirection: "column",
-                      marginBottom: 3,
-                    }}
-                  >
-                    {item.title}
-                  </Text>
+                <View style={styles.postCardContainer}>
+                  <View style={styles.avatar}>
+                    <Avatar rounded source={{ uri: item.user.img }} />
+                  </View>
+                  <View style={styles.descriptionContainer}>
+                    <Text style={styles.descriptionText}>{item.title}</Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-      <Button
-        type="outline"
-        buttonStyle={{
-          borderRadius: 0,
-          marginLeft: 0,
-          marginRight: 0,
-          marginBottom: 0,
-        }}
-        title="Back To Search"
-        onPress={() => props.navigation.goBack()}
-      />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: {
+  container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  postsContainer: {
     flex: 1,
+    marginBottom: 30,
+  },
+  postContainer: {
+    flex: 1,
+  },
+  postImageContainer: {
+    flex: 1,
+  },
+  postCardContainer: {
+    flex: 1,
+    marginBottom: 7,
+    marginTop: 7,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  image: {
+    width: "100%",
+    height: 250,
+  },
+  avatar: {
+    flex: 1,
+  },
+  descriptionContainer: {
+    flex: 7,
+  },
+  descriptionText: {
+    flex: 1,
+    flexDirection: "column",
+    marginBottom: 3,
   },
 });
 

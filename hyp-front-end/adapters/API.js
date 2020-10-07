@@ -1,13 +1,10 @@
-// const apiEndpoint = 'https://bbc9d876.ngrok.io'
 const apiEndpoint = "http://localhost:3000";
 const usersUrl = `${apiEndpoint}/users`;
-const loginUrl = `${apiEndpoint}/login`;
-const validateUrl = `${apiEndpoint}/validate`;
 const postsUrl = `${apiEndpoint}/posts`;
 const searchUrl = `${apiEndpoint}/posts/search`;
 const setCurrentUserUrl = `${apiEndpoint}/set_current_user`;
-const usersPostsUrl = `${apiEndpoint}/user`;
 const googleSignInUrl = `${usersUrl}/googleSignIn`;
+const commentsUrl = `${apiEndpoint}/comments`;
 import { AsyncStorage } from "react-native";
 
 const jsonify = (res) => res.json();
@@ -33,23 +30,14 @@ const getAllPosts = () => {
   return fetch(postsUrl).then(jsonify);
 };
 
-// const createPost = (post) => {
-//   let headers = new Headers();
-//   headers.append("Accept", "application/json");
-//   let request = new Request(postsUrl, {
-//     method: "POST",
-//     headers: headers,
-//     body: post,
-//   });
-//   fetch(request).then(jsonify);
-// };
-
-const createPost = (video_url) => {
+const createPost = (post, url, id) => {
   return fetch("http://localhost:3000/posts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      video_url: video_url,
+      post: post,
+      url: url,
+      id: id,
     }),
   }).then(jsonify);
 };
@@ -83,33 +71,38 @@ const unFollowUser = async (user_id, followedUser) => {
 };
 
 const getUsersPosts = async (userId) => {
-  console.log(userId);
-  // return fetch(`${usersPostsUrl}/${userId}`).then(jsonify);
   const posts = await fetch(`http://localhost:3000/posts/user/${userId}`).then(
     jsonify
   );
   return posts;
-  // const thePosts = await posts.jsonify();
-  // console.log(thePosts);
 };
 
 const getPostSearchResults = (tag) => {
   return fetch(searchUrl, {
     method: "POST",
-    headers: constructHeaders({ "Content-Type": "application/json" }),
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ tag }),
     redirect: "manual",
   }).then(jsonify);
 };
 
-const addNewComment = (comment, postId) => {
+const getGeoSearchResults = (input, location) => {
+  return fetch("http://localhost:3000/posts/search/geo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ input, location }),
+    redirect: "manual",
+  }).then(jsonify);
+};
+
+const addNewComment = (comment, postId, user_id) => {
   return fetch(commentsUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       comment: comment,
       post_id: postId,
-      user_id: "5e861dd8acaac86fbd704cc1",
+      user_id: user_id,
     }),
   }).then(jsonify);
 };
@@ -153,6 +146,16 @@ const getCurrentUser = () => {
   }).then(jsonify);
 };
 
+const findusers = (input) => {
+  return fetch("http://localhost:3000/users/search", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      searchInput: input,
+    }),
+  }).then(jsonify);
+};
+
 export default {
   getCurrentUser,
   getAllPosts,
@@ -167,4 +170,6 @@ export default {
   followUser,
   unFollowUser,
   getOneUser,
+  findusers,
+  getGeoSearchResults,
 };

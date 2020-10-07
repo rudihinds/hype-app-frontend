@@ -4,23 +4,34 @@ import {
   HANDLE_SEARCH,
   HANDLE_SEARCHED_POSTS,
   COMMENT_HANDLER,
-  HANDLE_LOGGED_USER,
-  HANDLE_FOLLOW_SWITCH,
-  HANDLE_SHOW_FOLLOWERS,
-  HANDLE_SHOW_FOLLOWED,
-  HANDLE_FOLLOW_ACTION,
-  HANDLE_UNFOLLOW_ACTION,
+  HANDLE_CHOSEN_POST,
+  HANDLE_GEO_SEARCH,
 } from "../actions/types";
 
 const initialState = {
   allPosts: [],
   item: {},
   searchInput: "",
+  geoSearchInput: "",
   commentInput: "",
   searchedPosts: [],
-  user: {},
   shownUser: {},
   friendsDisplay: "followers",
+  chosenPost: {},
+  post: {
+    title: "yolo",
+    caption: "yolo2",
+    latitude: null,
+    longitude: null,
+    tags: {
+      tag: "",
+      tagsArray: ["blood", "floods", "your", "dungarees"],
+    },
+    captures: {},
+    preview: null,
+    userId: 1,
+    uri: "",
+  },
 };
 
 export default (state = initialState, action) => {
@@ -40,45 +51,25 @@ export default (state = initialState, action) => {
         ...state,
         searchInput: action.payload,
       };
-    case HANDLE_SEARCHED_POSTS:
-      return {
-        ...state,
-        searchedPosts: action.payload,
-      };
     case COMMENT_HANDLER:
       return {
         ...state,
         commentInput: action.payload,
       };
-    case HANDLE_LOGGED_USER:
+    case HANDLE_SEARCHED_POSTS:
       return {
         ...state,
-        user: action.payload,
+        searchedPosts: action.payload,
       };
-    case HANDLE_FOLLOW_SWITCH:
+    case HANDLE_CHOSEN_POST:
       return {
         ...state,
-        showFollowers: !state.showFollowers,
+        chosenPost: action.payload,
       };
-    case HANDLE_SHOW_FOLLOWERS:
+    case HANDLE_GEO_SEARCH:
       return {
         ...state,
-        friendsDisplay: "followers",
-      };
-    case HANDLE_SHOW_FOLLOWED:
-      return {
-        ...state,
-        friendsDisplay: "followed",
-      };
-    case HANDLE_FOLLOW_ACTION:
-      return {
-        ...state,
-        user: action.payload,
-      };
-    case HANDLE_UNFOLLOW_ACTION:
-      return {
-        ...state,
-        user: action.payload,
+        geoSearchInput: action.payload,
       };
     default:
       return {
